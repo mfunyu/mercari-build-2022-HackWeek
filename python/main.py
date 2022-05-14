@@ -2,6 +2,7 @@ import os
 import logging
 import pathlib
 import json
+import sqlite3
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +20,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+
 @app.get("/")
 def root():
     return {"message": "Hello, world!"}
@@ -28,16 +31,12 @@ def root():
 def add_item(name: str = Form(...), category: str = Form(...)):
     logger.info(f"Receive item: {name} Category: {category}")
 
-    filename = "items.json"
-    new_item = {"name": name, "category": category}
-    
-    with open(filename, "r") as file:
-        data = json.load(file)
-    
-    data["items"].append(new_item)
-
-    with open(filename, "w") as file:
-        json.dump(data, file)
+    dbname = "mercari.sqlite3"
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    print("Database connected to Sqlite")
+    c.execute("INSERT INTO items (name, category) VALUES (?, ?)", (name, category))
+    conn.commit()
 
     return {"message": f"item received: {name}"}
 
