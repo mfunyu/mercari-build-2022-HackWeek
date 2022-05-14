@@ -30,6 +30,7 @@ def add_item(name: str = Form(...), category: str = Form(...)):
 
     filename = "items.json"
     new_item = {"name": name, "category": category}
+    
     with open(filename, "r") as file:
         data = json.load(file)
     
@@ -38,7 +39,16 @@ def add_item(name: str = Form(...), category: str = Form(...)):
     with open(filename, "w") as file:
         json.dump(data, file)
 
-    return {"message": f"item received: {name} category: {category}"}
+    return {"message": f"item received: {name}"}
+
+@app.get("/items")
+def show_item():
+    filename = "items.json"
+
+    with open(filename, "r") as file:
+        data = json.load(file)
+
+    return data
 
 
 @app.get("/image/{items_image}")
