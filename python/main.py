@@ -54,7 +54,19 @@ def show_item():
     conn.close()
 
     return response
- 
+
+
+@app.get("/search")
+def search_item(keyword: str):
+    print(keyword)
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    print("Database connected to Sqlite")
+
+    c.execute('SELECT id, name, category FROM items WHERE name LIKE (?)', (f'%{keyword}%',))
+    response = { "items": [{ "name": name, "category": category} for (item_id, name, category) in c] }
+
+    return response
 
 @app.get("/image/{items_image}")
 async def get_image(items_image):
