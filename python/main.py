@@ -19,12 +19,7 @@ app.add_middleware(
     allow_methods=["GET","POST","PUT","DELETE"],
     allow_headers=["*"],
 )
-"""
-dbname = "mercari.sqlite3"
-conn = sqlite3.connect(dbname, check_same_thread=False)
-c = conn.cursor()
-print("Database connected to Sqlite")
-"""
+
 
 @app.get("/")
 def root():
