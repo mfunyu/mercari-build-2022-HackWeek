@@ -1,8 +1,8 @@
 import os
 import logging
 import pathlib
-import json
 import sqlite3
+import hashlib
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,14 +29,15 @@ def root():
 
 
 @app.post("/items")
-def add_item(name: str = Form(...), category: str = Form(...)):
-    logger.info(f"Receive item: {name} Category: {category}")
+def add_item(name: str = Form(...), category: str = Form(...), image: str = Form(...)):
+    logger.info(f"Receive item: {name} Category: {category} Image: {image}")
     
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
     print("Database connected to Sqlite")
 
-    c.execute("INSERT INTO items (name, category) VALUES (?, ?)", (name, category))
+    hashed_image = hashlib.sha256(image.encode()).hexdigest()
+    c.execute("INSERT INTO items (name, category, image) VALUES (?, ?, ?)", (name, category, f'{hashed_image}.jpg'))
     conn.commit()
     conn.close()
     return {"message": f"item received: {name}"}
@@ -49,12 +50,25 @@ def show_item():
     c = conn.cursor()
     print("Database connected to Sqlite")
 
-    c.execute("SELECT id, name, category FROM items")
-    response = { "items": [{"id": item_id,  "name": name, "category": category} for (item_id, name, category) in c] }
+    c.execute("SELECT id, name, category, image FROM items")
+    response = { "items": [{"id": item_id,  "name": name, "category": category, "image": image} for (item_id, name, category, image) in c] }
     conn.close()
 
     return response
 
+
+@app.get("/items/{id}")
+def item_details(id):
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    print("Database connected to Sqlite")
+
+    c.execute("SELECT id, name, category, image FROM items WHERE id IS ?", id)
+    response = [{"name": name, "category": category, "image": image} for (item_id, name, category, image) in c]
+    conn.close()
+
+    return response[0]
 
 @app.get("/search")
 def search_item(keyword: str):
