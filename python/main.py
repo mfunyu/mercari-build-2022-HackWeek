@@ -20,6 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+dbname = "mercari.sqlite3"
+conn = sqlite3.connect(dbname, check_same_thread=False)
+c = conn.cursor()
+print("Database connected to Sqlite")
 
 
 @app.get("/")
@@ -31,24 +35,16 @@ def root():
 def add_item(name: str = Form(...), category: str = Form(...)):
     logger.info(f"Receive item: {name} Category: {category}")
 
-    dbname = "mercari.sqlite3"
-    conn = sqlite3.connect(dbname)
-    c = conn.cursor()
-    print("Database connected to Sqlite")
     c.execute("INSERT INTO items (name, category) VALUES (?, ?)", (name, category))
     conn.commit()
-
     return {"message": f"item received: {name}"}
+
 
 @app.get("/items")
 def show_item():
-    filename = "items.json"
-
-    with open(filename, "r") as file:
-        data = json.load(file)
-
-    return data
-
+    c.execute("SELECT id, name, category FROM items")
+    return { "items": [{"id": item_id,  "name": name, "category": category} for (item_id, name, category) in c] }
+ 
 
 @app.get("/image/{items_image}")
 async def get_image(items_image):
