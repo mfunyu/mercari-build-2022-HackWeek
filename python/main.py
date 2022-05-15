@@ -20,6 +20,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+dbname = "mercari.sqlite3"
+
 
 @app.get("/")
 def root():
@@ -29,8 +31,7 @@ def root():
 @app.post("/items")
 def add_item(name: str = Form(...), category: str = Form(...)):
     logger.info(f"Receive item: {name} Category: {category}")
-
-    dbname = "mercari.sqlite3"
+    
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
     print("Database connected to Sqlite")
@@ -44,7 +45,6 @@ def add_item(name: str = Form(...), category: str = Form(...)):
 @app.get("/items")
 def show_item():
 
-    dbname = "mercari.sqlite3"
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
     print("Database connected to Sqlite")
