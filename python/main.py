@@ -57,6 +57,19 @@ def show_item():
     return response
 
 
+@app.get("/items/{id}")
+def item_details(id):
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    print("Database connected to Sqlite")
+
+    c.execute("SELECT id, name, category, image FROM items WHERE id IS ?", id)
+    response = [{"name": name, "category": category, "image": image} for (item_id, name, category, image) in c]
+    conn.close()
+
+    return response[0]
+
 @app.get("/search")
 def search_item(keyword: str):
     print(keyword)
