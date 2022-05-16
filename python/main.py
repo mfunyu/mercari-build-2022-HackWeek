@@ -150,3 +150,17 @@ async def get_image(image_filename):
         image = images / "default.jpg"
 
     return FileResponse(image)
+
+
+@app.post("/category")
+def add_category(name: str = Form(...)):
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    print("Database connected to Sqlite")
+
+    c.execute("INSERT OR IGNORE INTO category (name) VALUES (?)", (name,))
+    conn.commit()
+    conn.close()
+
+    return {"message": f"New category added: {name}"}
