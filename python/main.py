@@ -157,10 +157,15 @@ def add_category(name: str = Form(...)):
 
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    print("Database connected to Sqlite")
 
-    c.execute("INSERT OR IGNORE INTO category (name) VALUES (?)", (name,))
-    conn.commit()
-    conn.close()
+    category_id = c.execute("SELECT id FROM category WHERE name=?", (name,)).fetchone()
+    print(category_id)
+    if category_id is None:
+        c.execute("INSERT INTO category (name) VALUES (?)", (name,))
+        conn.commit()
+        conn.close()
+        return {"message": f"New category added: {name}"}
+    else: 
+        return {"message": f"This category already exists: {name}"}
 
-    return {"message": f"New category added: {name}"}
+     
