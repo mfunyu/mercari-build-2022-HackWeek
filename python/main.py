@@ -150,3 +150,22 @@ async def get_image(image_filename):
         image = images / "default.jpg"
 
     return FileResponse(image)
+
+
+@app.post("/category")
+def add_category(name: str = Form(...)):
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+
+    category_id = c.execute("SELECT id FROM category WHERE name=?", (name,)).fetchone()
+    print(category_id)
+    if category_id is None:
+        c.execute("INSERT INTO category (name) VALUES (?)", (name,))
+        conn.commit()
+        conn.close()
+        return {"message": f"New category added: {name}"}
+    else: 
+        return {"message": f"This category already exists: {name}"}
+
+     
