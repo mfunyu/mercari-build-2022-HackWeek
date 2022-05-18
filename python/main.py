@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 logger = logging.getLogger("uvicorn")
 logger.level = logging.DEBUG
-images = pathlib.Path(__file__).parent.resolve() / "image"
+images = pathlib.Path(__file__).parent.resolve() / "images"
 origins = [ os.environ.get('FRONT_URL', 'http://localhost:3000') ]
 app.add_middleware(
     CORSMiddleware,
@@ -149,6 +149,7 @@ async def get_image(image_filename):
         logger.debug(f"Image not found: {image}")
         image = images / "default.jpg"
 
+
     return FileResponse(image)
 
 
@@ -167,5 +168,3 @@ def add_category(name: str = Form(...)):
         return {"message": f"New category added: {name}"}
     else: 
         return {"message": f"This category already exists: {name}"}
-
-     
