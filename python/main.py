@@ -34,10 +34,18 @@ def add_item(name: str = Form(...), category: int = Form(...), image: str = Form
     
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    print("Database connected to Sqlite")
 
     hashed_image = hashlib.sha256(image.encode()).hexdigest()
-    c.execute("INSERT INTO items (name, category_id, image) VALUES (?, ?, ?)", (name, category, f'{hashed_image}.jpg'))
+    c.execute(
+        '''
+        INSERT INTO
+            items (name, category_id, image) 
+        VALUES 
+            (?, ?, ?)
+        ''',
+        (name, category, f'{hashed_image}.jpg')
+    )
+    
     conn.commit()
     conn.close()
 
@@ -49,9 +57,22 @@ def show_item():
 
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    print("Database connected to Sqlite")
 
-    c.execute("SELECT items.id, items.name, items.image, category.name FROM items INNER JOIN category ON items.category_id=category.id")
+    c.execute(
+        '''
+        SELECT 
+            items.id, 
+            items.name, 
+            items.image, 
+            category.name 
+        FROM 
+            items 
+        INNER JOIN 
+            category 
+        ON 
+            items.category_id=category.id
+        '''
+    )
     response = { "items": [{"name": name, "category": category_name, "image": image} for (item_id, name, image, category_name) in c] }
     conn.close()
 
@@ -63,9 +84,27 @@ def item_details(id):
 
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    print("Database connected to Sqlite")
 
-    c.execute("SELECT items.id, items.name, items.image, category.name FROM items INNER JOIN category ON items.category_id=category.id WHERE items.id IS ?", id)
+    c.execute(
+        '''
+        SELECT 
+            items.id, 
+            items.name, 
+            items.image, 
+            category.name 
+        FROM 
+            items 
+        INNER JOIN 
+            category 
+        ON 
+            items.category_id=category.id 
+        WHERE 
+            items.id 
+        IS 
+            ?
+        ''',
+        id
+    )
     response = [{"name": name, "category": category_name, "image": image} for (item_id, name, image, category_name) in c]
     conn.close()
 
@@ -77,9 +116,22 @@ def search_item(keyword: str):
 
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-    print("Database connected to Sqlite")
 
-    c.execute('SELECT id, name, category_id FROM items WHERE name LIKE (?)', (f'%{keyword}%',))
+    c.execute(
+        '''
+        SELECT
+            id,
+            name, 
+            category_id 
+        FROM 
+            items 
+        WHERE 
+            name 
+        LIKE 
+            (?)
+        ''',
+        (f'%{keyword}%',)
+    )
     response = { "items": [{ "name": name, "category": category} for (item_id, name, category) in c] }
 
     return response
@@ -98,3 +150,22 @@ async def get_image(image_filename):
         image = images / "default.jpg"
 
     return FileResponse(image)
+
+
+@app.post("/category")
+def add_category(name: str = Form(...)):
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+
+    category_id = c.execute("SELECT id FROM category WHERE name=?", (name,)).fetchone()
+    print(category_id)
+    if category_id is None:
+        c.execute("INSERT INTO category (name) VALUES (?)", (name,))
+        conn.commit()
+        conn.close()
+        return {"message": f"New category added: {name}"}
+    else: 
+        return {"message": f"This category already exists: {name}"}
+
+     
