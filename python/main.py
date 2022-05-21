@@ -31,7 +31,6 @@ def root():
 @app.post("/items")
 def add_item(name: str = Form(...), category: int = Form(...), image: str = Form(...)):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
-    
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
@@ -54,8 +53,8 @@ def add_item(name: str = Form(...), category: int = Form(...), image: str = Form
 
 @app.get("/items")
 def show_item():
-
     conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     c.execute(
@@ -73,7 +72,7 @@ def show_item():
             items.category_id=category.id
         '''
     )
-    response = { "items": [{"name": name, "category": category_name, "image": image} for (item_id, name, image, category_name) in c] }
+    response = { "items": [row for row in c] }
     conn.close()
 
     return response
@@ -81,7 +80,6 @@ def show_item():
 
 @app.get("/items/{id}")
 def item_details(id):
-
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
@@ -99,9 +97,7 @@ def item_details(id):
         ON 
             items.category_id=category.id 
         WHERE 
-            items.id 
-        IS 
-            ?
+            items.id = ?
         ''',
         id
     )
@@ -113,8 +109,8 @@ def item_details(id):
 
 @app.get("/search")
 def search_item(keyword: str):
-
     conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     c.execute(
@@ -132,7 +128,7 @@ def search_item(keyword: str):
         ''',
         (f'%{keyword}%',)
     )
-    response = { "items": [{ "name": name, "category": category} for (item_id, name, category) in c] }
+    response = { "items": [row for row in c] }
 
     return response
 
@@ -155,7 +151,6 @@ async def get_image(image_filename):
 
 @app.post("/category")
 def add_category(name: str = Form(...)):
-
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
