@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 
@@ -12,6 +12,11 @@ type formDataType = {
   image: string | File,
 }
 
+type Category = {
+  id: number,
+  name: string,
+}
+
 export const Listing: React.FC<Prop> = (props) => {
   const { onListingCompleted } = props;
   const initialState = {
@@ -20,8 +25,36 @@ export const Listing: React.FC<Prop> = (props) => {
     image: "",
   };
   const [values, setValues] = useState<formDataType>(initialState);
+  const [categories, setCategories] = useState<Category[]>([])
 
-  const onValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Categories
+  const fetchCategories = () => {
+    fetch(server.concat('/categories'),    //fetch API
+      {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('GET success:', data);
+        setCategories(data.items);
+      })
+      .catch(error => {
+        console.error('GET error:', error)
+      })
+  }
+
+  useEffect(() => {
+      // Get Categories list on first render
+      fetchCategories();
+  }, []);
+
+
+  const onValueChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     setValues({
       ...values, [event.target.name]: event.target.value,
     })
@@ -56,7 +89,10 @@ export const Listing: React.FC<Prop> = (props) => {
       <form onSubmit={onSubmit}>
         <div>
           <input type='text' name='name' id='name' placeholder='name' onChange={onValueChange} required />
-          <input type='text' name='category' id='category' placeholder='category' onChange={onValueChange} />
+          <select name="category" id="category" onChange={onValueChange} required >
+            <option value="" disabled selected>Select a category...</option>
+            {categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
+          </select>
           <input type='file' name='image' id='image' onChange={onFileChange} required />
           <button type='submit'>List this item</button>
         </div>

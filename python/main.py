@@ -43,7 +43,7 @@ async def add_item(name: str = Form(...), category: int = Form(...), image: Uplo
     with open(images / hashed_file_name, "wb") as f:
         f.write(image_bytes)
 
-    # save hashed filed name to db
+    # save hashed file name to db
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
@@ -71,10 +71,10 @@ def show_item():
     c.execute(
         '''
         SELECT 
-            items.id, 
+            items.id,
             items.name, 
             items.image, 
-            category.name 
+            category.name as category
         FROM 
             items 
         INNER JOIN 
@@ -101,7 +101,7 @@ def item_details(id):
             items.id, 
             items.name, 
             items.image, 
-            category.name 
+            category.name as category
         FROM 
             items 
         INNER JOIN 
@@ -165,7 +165,7 @@ async def get_image(image_filename):
     return FileResponse(image)
 
 
-@app.post("/category")
+@app.post("/categories")
 def add_category(name: str = Form(...)):
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
@@ -183,3 +183,23 @@ def add_category(name: str = Form(...)):
         conn.close()
 
     return {"message": f"New category added: {name}"}
+
+@app.get("/categories")
+def show_category():
+    conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        SELECT 
+            id,
+            name
+        FROM 
+            category
+        '''
+    )
+    response = { "items": [row for row in c] }
+    conn.close()
+
+    return response
