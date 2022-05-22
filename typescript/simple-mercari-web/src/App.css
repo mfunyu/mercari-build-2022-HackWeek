@@ -1,38 +1,112 @@
+body {
+  font-size: 16px;
+}
 .App {
   text-align: center;
 }
 
 .Title {
-  background-color: #222427;
+  background-color: #FFE194;
   min-height: 8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: left;
-  font-size: calc(10px + 1vmin);
-  color: white;
+  font-size: calc(15px + 1vmin);
+  color: #4C4C6D;
+  font-family: 'PT Sans', sans-serif;
 }
 
 .Listing {
-  background-color: #222427;
+  background-color: #E8F6EF;
   min-height: 8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: left;
   font-size: calc(10px + 1vmin);
-  color: white;
+  color: #4C4C6D;
 }
 
 .ItemList {
-  background-color: #222427;
+  background-color: #B8DFD8;
   min-height: 8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: left;
   font-size: calc(10px + 1vmin);
-  color: white;
+  color: #4C4C6D;
+  border: solid 6px #E8F6EF;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover; 
+}
+
+input[type=text] {
+  padding: 12px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+select {
+  padding: 12px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+}
+
+.form input,
+.form select,
+.form button,
+.form label.upload {
+  font-size: 16px;
+}
+
+.form label.upload {
+  padding: 12px 20px;
+  margin: 10px;
+  color: #4C4C6D; 
+  background-color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+input[type=file] {
+  display:none;
+}
+
+button[type=submit] {
+  padding: 12px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #dbc6c6;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button[type=submit]:hover,
+.form label.upload:hover {
+  background-color: #dfb8b8;
+}
+
+.item_label {
+  font-weight:bold; 
 }
 
 .App-link {
