@@ -87,13 +87,15 @@ export const Listing: React.FC<Prop> = (props) => {
   return (
     <div className='Listing'>
       <form onSubmit={onSubmit}>
-        <div>
-          <input type='text' name='name' id='name' placeholder='name' onChange={onValueChange} required />
-          <select name="category" id="category" onChange={onValueChange} required >
-            <option value="" disabled selected>Select a category...</option>
-            {categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
-          </select>
-          <input type='file' name='image' id='image' onChange={onFileChange} required />
+        <div className="form">
+            <input type='text' name='name' id='name' placeholder='Name' onChange={onValueChange} required />
+            <select name="category" id="category" onChange={onValueChange} required >
+              <option value="" disabled selected>Select a category...</option>
+              {categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
+            </select>
+          <label className="upload">Upload an image
+            <input type='file' name='image' id='image' onChange={onFileChange} required />
+          </label>
           <button type='submit'>List this item</button>
         </div>
       </form>
