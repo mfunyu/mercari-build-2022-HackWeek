@@ -3,7 +3,7 @@ import logging
 import pathlib
 import sqlite3
 import hashlib
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, Form, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -28,13 +28,25 @@ def root():
     return {"message": "Hello, world!"}
 
 
-@app.post("/items")
-def add_item(name: str = Form(...), category: int = Form(...), image: str = Form(...)):
+@app.post("/items", status_code=201)
+async def add_item(name: str = Form(...), category: int = Form(...), image: UploadFile = File(...)):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
+
+    # check if the image is .jpg
+    file_name = image.filename
+    if not file_name.lower().endswith(('.jpg')):
+        raise HTTPException(status_code=400, detail="File does not end with .jpg")
+
+    # hash the file name and save it in images folder
+    hashed_file_name = f"{hashlib.sha256(file_name.encode()).hexdigest()}.jpg"
+    image_bytes = await image.read()
+    with open(images / hashed_file_name, "wb") as f:
+        f.write(image_bytes)
+
+    # save hashed filed name to db
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
-    hashed_image = hashlib.sha256(image.encode()).hexdigest()
     c.execute(
         '''
         INSERT INTO
@@ -42,12 +54,11 @@ def add_item(name: str = Form(...), category: int = Form(...), image: str = Form
         VALUES 
             (?, ?, ?)
         ''',
-        (name, category, f'{hashed_image}.jpg')
+        (name, category, hashed_file_name)
     )
-    
+
     conn.commit()
     conn.close()
-
     return {"message": f"item received: {name}"}
 
 
@@ -81,6 +92,7 @@ def show_item():
 @app.get("/items/{id}")
 def item_details(id):
     conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     c.execute(
@@ -97,12 +109,16 @@ def item_details(id):
         ON 
             items.category_id=category.id 
         WHERE 
-            items.id = ?
+            items.id = (?)
         ''',
-        id
+        (id,)
     )
-    response = [{"name": name, "category": category_name, "image": image} for (item_id, name, image, category_name) in c]
+    response = [row for row in c]
     conn.close()
+
+    if len(response) == 0:
+        logger.debug(f"item with id {id} not found")
+        raise HTTPException(status_code=404, detail="Item not found")
 
     return response[0]
 
@@ -154,12 +170,16 @@ def add_category(name: str = Form(...)):
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
-    category_id = c.execute("SELECT id FROM category WHERE name=?", (name,)).fetchone()
-    print(category_id)
-    if category_id is None:
+    try:
         c.execute("INSERT INTO category (name) VALUES (?)", (name,))
         conn.commit()
+    except sqlite3.IntegrityError as err:
+        if "UNIQUE constraint" in str(err):
+            raise HTTPException(status_code=400, detail=f"This category already exists: {name}")
+        # Log unhandled errors and re-raise
+        logger.error(f"Unhandled error occurred")
+        raise err
+    finally:
         conn.close()
-        return {"message": f"New category added: {name}"}
-    else: 
-        return {"message": f"This category already exists: {name}"}
+
+    return {"message": f"New category added: {name}"}
