@@ -46,7 +46,7 @@ def root():
 @app.post("/items", status_code=201)
 async def add_item(
         name: str = Form(...), category: str = Form(...), image: UploadFile = File(...),
-        price: int = Form(7000), is_auction: int = Form(0), on_sale: int = Form(1)
+        price: int = Form(...), is_auction: int = Form(0), on_sale: int = Form(1)
     ):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
