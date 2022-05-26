@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS items (
 	name TEXT,
 	category_id TEXT,
 	image TEXT,
+	price INT,
 	is_auction INT,
 	on_sale INT
 );

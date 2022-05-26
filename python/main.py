@@ -44,7 +44,10 @@ def root():
 
 
 @app.post("/items", status_code=201)
-async def add_item(name: str = Form(...), category: str = Form(...), image: UploadFile = File(...), is_auction: int = Form(0), on_sale: int = Form(1)):
+async def add_item(
+        name: str = Form(...), category: str = Form(...), image: UploadFile = File(...),
+        price: int = Form(7000), is_auction: int = Form(0), on_sale: int = Form(1)
+    ):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
     # generate UUID
@@ -67,11 +70,11 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
     c.execute(
         '''
         INSERT INTO
-            items (id, name, category_id, image, is_auction, on_sale) 
+            items (id, name, category_id, image, price, is_auction, on_sale) 
         VALUES 
-            (?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?)
         ''',
-        (id, name, category, hashed_file_name, is_auction, on_sale)
+        (id, name, category, hashed_file_name, price, is_auction, on_sale)
     )
 
     conn.commit()
@@ -91,7 +94,8 @@ def show_item():
             items.id,
             items.name, 
             category.name as category,
-            items.image, 
+            items.image,
+            items.price,
             items.is_auction,
             items.on_sale
         FROM 
@@ -121,6 +125,7 @@ def item_details(id):
             items.name, 
             category.name as category,
             items.image, 
+            items.price,
             items.is_auction,
             items.on_sale
         FROM 
