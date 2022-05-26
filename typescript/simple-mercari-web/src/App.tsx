@@ -2,6 +2,9 @@ import { useState } from 'react';
 import './App.css';
 import { ItemList } from './components/ItemList';
 import { Listing } from './components/Listing';
+import {
+  Link
+} from "react-router-dom";
 
 function App() {
   // reload ItemList after Listing complete
@@ -9,9 +12,7 @@ function App() {
   return (
     <div>
       <header className='Title'>
-        <p>
-          <b>Simple Mercari</b>
-        </p>
+        <p><Link to="/">Listing</Link> | <Link to="/auction">Auction</Link></p>
       </header>
       <div>
         <Listing onListingCompleted={() => setReload(true)} />
