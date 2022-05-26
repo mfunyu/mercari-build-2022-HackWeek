@@ -15,9 +15,10 @@ CREATE TABLE IF NOT EXISTS category (
 
 CREATE TABLE IF NOT EXISTS auction (
 	id TEXT PRIMARY KEY,
+	bidder_name TEXT,
 	items_id TEXT,
-	FOREIGN KEY(items_id) REFERENCES items(id),
 	bid_price INT,
-	date_created INT,
-	date_updated INT
+	date_created TEXT,
+	date_updated TEXT,
+	FOREIGN KEY(items_id) REFERENCES items(id)
 );

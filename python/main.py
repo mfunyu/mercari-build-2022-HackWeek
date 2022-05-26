@@ -7,6 +7,7 @@ import uuid
 from fastapi import FastAPI, Form, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 
 app = FastAPI()
 logger = logging.getLogger("uvicorn")
@@ -254,5 +255,36 @@ def update_status(id):
     conn.close()
 
     return item_details(id)
+
+@app.post("/auction/{id}", status_code=201)
+async def add_bid(
+        bidder_id: str = Form("user_id"),  items_id: str = id, bid_price: int = Form(6000)
+    ):
+    logger.info(f"New bid: {bid_price} yen for items_id: {items_id} from bidder_id: {bidder_id}")
+
+    # generate UUID
+    generated_id = str(uuid.uuid4())
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+
+    c.execute("SELECT name FROM items WHERE id = (?)", (id,))
+    for row in c:
+        print(row)
+
+    c.execute(
+        '''
+        INSERT INTO
+            auction (id, bidder_name, items_id, bid_price, date_created, date_updated)
+        VALUES 
+            (?, ?, ?, ?, ?, ?)
+        ''',
+        (generated_id, bidder_name, items_id, bid_price, date_created, date_updated)
+    )
+
+    conn.commit()
+    conn.close()   
+    return {"message"}
+    #return {"message": f"item received: {name}"}
 
 init_db()
