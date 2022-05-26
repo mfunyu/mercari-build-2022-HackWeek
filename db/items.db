@@ -17,8 +17,7 @@ CREATE TABLE IF NOT EXISTS auction (
 	id TEXT PRIMARY KEY,
 	bidder_name TEXT,
 	items_id TEXT,
-	bid_price INT,
-	date_created TEXT,
-	date_updated TEXT,
+	bid_price TEXT,
+	item_name TEXT,
 	FOREIGN KEY(items_id) REFERENCES items(id)
 );
