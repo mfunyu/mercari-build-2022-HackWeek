@@ -10,6 +10,8 @@ type formDataType = {
   name: string,
   category: string,
   image: string | File,
+  price: string,
+  auction: string
 }
 
 type Category = {
@@ -23,9 +25,16 @@ export const Listing: React.FC<Prop> = (props) => {
     name: "",
     category: "",
     image: "",
+    price: "",
+    auction: "",
   };
   const [values, setValues] = useState<formDataType>(initialState);
+  const [checked, setChecked] = React.useState(false);
   const [categories, setCategories] = useState<Category[]>([])
+
+  const handleChange = () => {
+    setChecked(!checked);
+  };
 
   // Categories
   const fetchCategories = () => {
@@ -70,6 +79,10 @@ export const Listing: React.FC<Prop> = (props) => {
     data.append('name', values.name)
     data.append('category', values.category)
     data.append('image', values.image)
+    data.append('price', values.price)
+    const isAuction = checked ? 1 : 0
+    data.append('is_auction', isAuction.toString())
+    console.log(isAuction.toString())
 
     fetch(server.concat('/items'), {
       method: 'POST',
@@ -93,6 +106,11 @@ export const Listing: React.FC<Prop> = (props) => {
               <option value="" disabled selected>Select a category...</option>
               {categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
             </select>
+            <input type='text' name='price' id='price' placeholder='Price' onChange={onValueChange} required />
+            <Checkbox label="Allow Auction"
+            value={checked}
+            onChange={handleChange}
+            />
           <label className="upload">Upload an image
             <input type='file' name='image' id='image' onChange={onFileChange} required />
           </label>
@@ -102,3 +120,13 @@ export const Listing: React.FC<Prop> = (props) => {
     </div>
   );
 }
+
+// @ts-ignore
+const Checkbox = ({label, value, onChange}) => {
+  return (
+    <label>
+      <input type="checkbox" checked={value} onChange={onChange} />
+      {label}
+    </label>
+  );
+};

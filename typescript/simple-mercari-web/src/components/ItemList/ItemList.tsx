@@ -5,6 +5,7 @@ interface Item {
   name: string;
   category: string;
   image: string;
+  price: string;
 };
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
@@ -51,11 +52,13 @@ export const ItemList: React.FC<Prop> = (props) => {
         return (
           <div key={item.id} className='ItemList'>
             {/* TODO: Task 1: Replace the placeholder image with the item image */}
-            <img src= {`${server}/image/${item.image}`} className='image'/>
+            <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
             <p>
               <span className="item_label">Name:</span> {item.name}
               <br />
               <span className="item_label">Category:</span> {item.category}
+              <br />
+              <span className="item_label">Price:</span> {item.price}
             </p>
           </div>
         )
