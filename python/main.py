@@ -3,6 +3,7 @@ import logging
 import pathlib
 import sqlite3
 import hashlib
+import uuid
 from fastapi import FastAPI, Form, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -43,9 +44,11 @@ def root():
 
 
 @app.post("/items", status_code=201)
-async def add_item(name: str = Form(...), category: int = Form(...), image: UploadFile = File(...)):
+async def add_item(name: str = Form(...), category: str = Form(...), image: UploadFile = File(...)):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
+    # generate UUID
+    id = str(uuid.uuid4())
     # check if the image is .jpg
     file_name = image.filename
     if not file_name.lower().endswith(('.jpg')):
@@ -64,11 +67,11 @@ async def add_item(name: str = Form(...), category: int = Form(...), image: Uplo
     c.execute(
         '''
         INSERT INTO
-            items (name, category_id, image) 
+            items (id, name, category_id, image) 
         VALUES 
-            (?, ?, ?)
+            (?, ?, ?, ?)
         ''',
-        (name, category, hashed_file_name)
+        (id, name, category, hashed_file_name)
     )
 
     conn.commit()
@@ -185,7 +188,9 @@ def add_category(name: str = Form(...)):
     c = conn.cursor()
 
     try:
-        c.execute("INSERT INTO category (name) VALUES (?)", (name,))
+        # generate UUID
+        id = str(uuid.uuid4())
+        c.execute("INSERT INTO category (id, name) VALUES (?, ?)", (id, name))
         conn.commit()
     except sqlite3.IntegrityError as err:
         if "UNIQUE constraint" in str(err):
