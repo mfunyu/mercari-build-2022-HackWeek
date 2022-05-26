@@ -1,8 +1,6 @@
 ## What
 <!--- Write the change being made with this pull request --->
 
-## CHECKS :warning:
+## How
+<!--- Write how to check the feature with this pull request --->
 
-Please make sure you are aware of the following.
-
-- [ ] **The changes in this PR doesn't have private information
