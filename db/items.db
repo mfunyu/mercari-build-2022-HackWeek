@@ -1,12 +1,15 @@
 CREATE TABLE IF NOT EXISTS items (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	id TEXT PRIMARY KEY,
 	name TEXT,
-	category_id INT,
-	image TEXT
+	category_id TEXT,
+	image TEXT,
+	price INT,
+	is_auction INT,
+	on_sale INT
 );
 
 CREATE TABLE IF NOT EXISTS category (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	id TEXT PRIMARY KEY,
 	name TEXT UNIQUE
 );
 

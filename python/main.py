@@ -21,8 +21,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+dbfile = "../db/items.db"
 dbname = "mercari.sqlite3"
 
+def init_db():
+    if os.path.isfile(dbname):
+        return
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor() 
+
+    with open(dbfile, 'r') as f:
+        sql_as_string = f.read()
+        c.executescript(sql_as_string)
+
+    conn.commit()
+    conn.close()
 
 @app.get("/")
 def root():
@@ -30,9 +44,14 @@ def root():
 
 
 @app.post("/items", status_code=201)
-async def add_item(name: str = Form(...), category: int = Form(...), image: UploadFile = File(...)):
+async def add_item(
+        name: str = Form(...), category: str = Form(...), image: UploadFile = File(...),
+        price: int = Form(7000), is_auction: int = Form(0), on_sale: int = Form(1)
+    ):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
+    # generate UUID
+    id = str(uuid.uuid4())
     # check if the image is .jpg
     file_name = image.filename
     if not file_name.lower().endswith(('.jpg')):
@@ -51,11 +70,11 @@ async def add_item(name: str = Form(...), category: int = Form(...), image: Uplo
     c.execute(
         '''
         INSERT INTO
-            items (name, category_id, image) 
+            items (id, name, category_id, image, price, is_auction, on_sale) 
         VALUES 
-            (?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?)
         ''',
-        (name, category, hashed_file_name)
+        (id, name, category, hashed_file_name, price, is_auction, on_sale)
     )
 
     conn.commit()
@@ -74,8 +93,11 @@ def show_item():
         SELECT 
             items.id,
             items.name, 
-            items.image, 
-            category.name as category
+            category.name as category,
+            items.image,
+            items.price,
+            items.is_auction,
+            items.on_sale
         FROM 
             items 
         INNER JOIN 
@@ -101,8 +123,11 @@ def item_details(id):
         SELECT 
             items.id, 
             items.name, 
+            category.name as category,
             items.image, 
-            category.name as category
+            items.price,
+            items.is_auction,
+            items.on_sale
         FROM 
             items 
         INNER JOIN 
@@ -172,7 +197,9 @@ def add_category(name: str = Form(...)):
     c = conn.cursor()
 
     try:
-        c.execute("INSERT INTO category (name) VALUES (?)", (name,))
+        # generate UUID
+        id = str(uuid.uuid4())
+        c.execute("INSERT INTO category (id, name) VALUES (?, ?)", (id, name))
         conn.commit()
     except sqlite3.IntegrityError as err:
         if "UNIQUE constraint" in str(err):
@@ -204,3 +231,28 @@ def show_category():
     conn.close()
 
     return response
+
+@app.put("/update/status/{id}")
+def update_status(id):
+    conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        UPDATE 
+            items
+        SET
+            on_sale = 0
+        WHERE
+            id = (?)
+        ''',
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return item_details(id)
+
+init_db()
