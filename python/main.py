@@ -20,8 +20,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+dbfile = "../db/items.db"
 dbname = "mercari.sqlite3"
 
+def init_db():
+    if os.path.isfile(dbname):
+        return
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor() 
+
+    with open(dbfile, 'r') as f:
+        sql_as_string = f.read()
+        c.executescript(sql_as_string)
+
+    conn.commit()
+    conn.close()
 
 @app.get("/")
 def root():
@@ -203,3 +217,5 @@ def show_category():
     conn.close()
 
     return response
+
+init_db()
