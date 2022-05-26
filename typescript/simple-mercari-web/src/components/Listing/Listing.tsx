@@ -10,6 +10,8 @@ type formDataType = {
   name: string,
   category: string,
   image: string | File,
+  price: string,
+  auction: boolean
 }
 
 type Category = {
@@ -23,6 +25,8 @@ export const Listing: React.FC<Prop> = (props) => {
     name: "",
     category: "",
     image: "",
+    price: "",
+    auction: false
   };
   const [values, setValues] = useState<formDataType>(initialState);
   const [categories, setCategories] = useState<Category[]>([])
@@ -70,6 +74,8 @@ export const Listing: React.FC<Prop> = (props) => {
     data.append('name', values.name)
     data.append('category', values.category)
     data.append('image', values.image)
+    data.append('price', values.price)
+    data.append('auction', values.auction.valueOf.toString())
 
     fetch(server.concat('/items'), {
       method: 'POST',
@@ -93,6 +99,8 @@ export const Listing: React.FC<Prop> = (props) => {
               <option value="" disabled selected>Select a category...</option>
               {categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
             </select>
+            <input type='text' name='price' id='price' placeholder='Price' onChange={onValueChange} required />
+            <span>Allow Auction<input type='checkbox' name='Auction' onChange={onValueChange}/></span>
           <label className="upload">Upload an image
             <input type='file' name='image' id='image' onChange={onFileChange} required />
           </label>
