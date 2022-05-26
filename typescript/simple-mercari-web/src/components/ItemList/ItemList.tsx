@@ -60,6 +60,9 @@ export const ItemList: React.FC<Prop> = (props) => {
               <br />
               <span className="item_label">Price:</span> {item.price}
             </p>
+            <p>
+              <button>Bid</button> | <button>Buy Now</button>
+            </p>
           </div>
         )
       })}
