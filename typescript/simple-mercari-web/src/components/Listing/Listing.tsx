@@ -11,7 +11,7 @@ type formDataType = {
   category: string,
   image: string | File,
   price: string,
-  auction: boolean
+  auction: string
 }
 
 type Category = {
@@ -26,10 +26,15 @@ export const Listing: React.FC<Prop> = (props) => {
     category: "",
     image: "",
     price: "",
-    auction: false
+    auction: "",
   };
   const [values, setValues] = useState<formDataType>(initialState);
+  const [checked, setChecked] = React.useState(false);
   const [categories, setCategories] = useState<Category[]>([])
+
+  const handleChange = () => {
+    setChecked(!checked);
+  };
 
   // Categories
   const fetchCategories = () => {
@@ -75,7 +80,8 @@ export const Listing: React.FC<Prop> = (props) => {
     data.append('category', values.category)
     data.append('image', values.image)
     data.append('price', values.price)
-    data.append('auction', values.auction.valueOf.toString())
+    data.append('auction', checked.toString())
+    console.log(checked.toString())
 
     fetch(server.concat('/items'), {
       method: 'POST',
@@ -100,7 +106,10 @@ export const Listing: React.FC<Prop> = (props) => {
               {categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
             </select>
             <input type='text' name='price' id='price' placeholder='Price' onChange={onValueChange} required />
-            <span>Allow Auction<input type='checkbox' name='Auction' onChange={onValueChange}/></span>
+            <Checkbox label="Allow Auction"
+            value={checked}
+            onChange={handleChange}
+            />
           <label className="upload">Upload an image
             <input type='file' name='image' id='image' onChange={onFileChange} required />
           </label>
@@ -110,3 +119,13 @@ export const Listing: React.FC<Prop> = (props) => {
     </div>
   );
 }
+
+// @ts-ignore
+const Checkbox = ({label, value, onChange}) => {
+  return (
+    <label>
+      <input type="checkbox" checked={value} onChange={onChange} />
+      {label}
+    </label>
+  );
+};
