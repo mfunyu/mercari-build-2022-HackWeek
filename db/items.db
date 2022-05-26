@@ -9,3 +9,12 @@ CREATE TABLE IF NOT EXISTS category (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name TEXT UNIQUE
 );
+
+CREATE TABLE IF NOT EXISTS auction (
+	id TEXT PRIMARY KEY,
+	items_id TEXT,
+	FOREIGN KEY(items_id) REFERENCES items(id),
+	bid_price INT,
+	date_created INT,
+	date_updated INT
+);

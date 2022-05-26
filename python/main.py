@@ -3,6 +3,7 @@ import logging
 import pathlib
 import sqlite3
 import hashlib
+import uuid
 from fastapi import FastAPI, Form, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
