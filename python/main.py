@@ -24,6 +24,22 @@ app.add_middleware(
 dbfile = "../db/items.db"
 dbname = "mercari.sqlite3"
 
+categories = [
+    "Women",
+    "Men",
+    "Baby / Kids",
+    "Interior / House / Accessories",
+    "Books / Music / Games",
+    "Toys / Hobbies / Goods",
+    "Cosmetic / Perfume / Beauties",
+    "Home appliances / Smartphones / Cameras",
+    "Sport / Leisure",
+    "Handmade",
+    "Ticket",
+    "Car / Motorcycle",
+    "others"
+]
+
 def init_db():
     if os.path.isfile(dbname):
         return
@@ -34,6 +50,9 @@ def init_db():
     with open(dbfile, 'r') as f:
         sql_as_string = f.read()
         c.executescript(sql_as_string)
+
+    for c in categories:
+        add_category(c)
 
     conn.commit()
     conn.close()
