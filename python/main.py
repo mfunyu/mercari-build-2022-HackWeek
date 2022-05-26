@@ -44,7 +44,7 @@ def root():
 
 
 @app.post("/items", status_code=201)
-async def add_item(name: str = Form(...), category: str = Form(...), image: UploadFile = File(...), is_auction: int = Form(0)):
+async def add_item(name: str = Form(...), category: str = Form(...), image: UploadFile = File(...), is_auction: int = Form(0), on_sale: int = Form(1)):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
     # generate UUID
@@ -67,11 +67,11 @@ async def add_item(name: str = Form(...), category: str = Form(...), image: Uplo
     c.execute(
         '''
         INSERT INTO
-            items (id, name, category_id, image, is_auction) 
+            items (id, name, category_id, image, is_auction, on_sale) 
         VALUES 
-            (?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?)
         ''',
-        (id, name, category, hashed_file_name, is_auction)
+        (id, name, category, hashed_file_name, is_auction, on_sale)
     )
 
     conn.commit()
@@ -92,7 +92,8 @@ def show_item():
             items.name, 
             category.name as category,
             items.image, 
-            items.is_auction
+            items.is_auction,
+            items.on_sale
         FROM 
             items 
         INNER JOIN 
@@ -120,7 +121,8 @@ def item_details(id):
             items.name, 
             category.name as category,
             items.image, 
-            items.is_auction
+            items.is_auction,
+            items.on_sale
         FROM 
             items 
         INNER JOIN 
@@ -224,5 +226,28 @@ def show_category():
     conn.close()
 
     return response
+
+@app.put("/update/status/{id}")
+def update_status(id):
+    conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        UPDATE 
+            items
+        SET
+            on_sale = 0
+        WHERE
+            id = (?)
+        ''',
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return item_details(id)
 
 init_db()
