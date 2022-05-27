@@ -109,6 +109,13 @@ button[type=submit]:hover,
   font-weight:bold; 
 }
 
+.auction-table {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center
+}
+
 .App-link {
   color: #61dafb;
 }
