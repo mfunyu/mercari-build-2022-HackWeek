@@ -7,6 +7,7 @@ import uuid
 from fastapi import FastAPI, Form, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 
 app = FastAPI()
 logger = logging.getLogger("uvicorn")
@@ -254,5 +255,40 @@ def update_status(id):
     conn.close()
 
     return item_details(id)
+
+@app.post("/auction/{item_id}", status_code=201)
+def add_bid(item_id: str, bid_price: str = Form(...)):
+    logger.info(f"New bid: {bid_price} yen for items_id: {item_id}")
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    
+    try:
+        # generate UUID
+        generated_id = str(uuid.uuid4())
+    
+        c.execute("SELECT name FROM items WHERE id = (?)", (item_id,))
+        data = c.fetchall()
+        
+        (name, ) = data[0]
+        c.execute(
+            '''
+            INSERT INTO
+                auction (id, bidder_name, items_id, bid_price, item_name)
+            VALUES 
+                (?, ?, ?, ?, ?)
+            ''',
+            (generated_id, "Bidder 1", item_id, bid_price, name)
+        )
+        conn.commit()
+    except sqlite3.IntegrityError as err:
+        if "UNIQUE constraint" in str(err):
+            raise HTTPException(status_code=400, detail=f"This user already has a bid for this item")
+            logger.error(f"Unhandled error occurred")
+            raise err
+    finally:
+        conn.close()
+
+    return {data[0]}
 
 init_db()

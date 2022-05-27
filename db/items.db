@@ -12,3 +12,13 @@ CREATE TABLE IF NOT EXISTS category (
 	id TEXT PRIMARY KEY,
 	name TEXT UNIQUE
 );
+
+CREATE TABLE IF NOT EXISTS auction (
+	id TEXT PRIMARY KEY,
+	bidder_name TEXT,
+	items_id TEXT,
+	bid_price TEXT,
+	item_name TEXT,
+	FOREIGN KEY(items_id) REFERENCES items(id)
+	UNIQUE (bidder_name, items_id)
+);
