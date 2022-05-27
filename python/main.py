@@ -342,4 +342,27 @@ def update_bid(item_id: str, bid_price: str = Form(...)):
     logger.debug(f"item with id {item_id} not found")
     raise HTTPException(status_code=404, detail=f"Item not found")
 
+@app.delete("/auction/{item_id}")
+def delete_bid(item_id: str):
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+
+    c.execute(
+    '''
+    DELETE FROM 
+        auction
+    WHERE
+        items_id = ? AND bidder_name = "Bidder 1"
+    ''',
+        (item_id,)
+    )
+    conn.commit()
+    conn.close()
+
+    if c.rowcount > 0:
+        return {"message": f"bid for {item_id} is deleted"}
+
+    logger.debug(f"item with id {item_id} not found")
+    raise HTTPException(status_code=404, detail=f"Item not found")
+
 init_db()
