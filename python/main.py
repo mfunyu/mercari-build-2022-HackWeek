@@ -316,4 +316,29 @@ def show_auction(item_id):
 
     return response
 
+@app.put("/auction/{item_id}")
+def update_bid(item_id: str, bid_price: str = Form(...)):
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    
+    c.execute(
+    '''
+    UPDATE 
+        auction
+    SET
+        bid_price = (?)
+    WHERE
+        items_id = ? AND bidder_name = "Bidder 1"
+    ''',
+        (bid_price, item_id)
+    )
+    conn.commit()
+    conn.close()
+
+    if c.rowcount > 0:
+        return {"message": f"bid price updated: {bid_price}"}
+
+    logger.debug(f"item with id {item_id} not found")
+    raise HTTPException(status_code=404, detail=f"Item not found")
+
 init_db()
