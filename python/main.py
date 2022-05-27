@@ -24,6 +24,22 @@ app.add_middleware(
 dbfile = "../db/items.db"
 dbname = "mercari.sqlite3"
 
+categories = [
+    "Women",
+    "Men",
+    "Baby / Kids",
+    "Interior / House / Accessories",
+    "Books / Music / Games",
+    "Toys / Hobbies / Goods",
+    "Cosmetic / Perfume / Beauties",
+    "Home appliances / Smartphones / Cameras",
+    "Sport / Leisure",
+    "Handmade",
+    "Ticket",
+    "Car / Motorcycle",
+    "others"
+]
+
 def init_db():
     if os.path.isfile(dbname):
         return
@@ -34,6 +50,9 @@ def init_db():
     with open(dbfile, 'r') as f:
         sql_as_string = f.read()
         c.executescript(sql_as_string)
+
+    for c in categories:
+        add_category(c)
 
     conn.commit()
     conn.close()
@@ -46,7 +65,7 @@ def root():
 @app.post("/items", status_code=201)
 async def add_item(
         name: str = Form(...), category: str = Form(...), image: UploadFile = File(...),
-        price: int = Form(7000), is_auction: int = Form(0), on_sale: int = Form(1)
+        price: int = Form(...), is_auction: int = Form(0), on_sale: int = Form(1)
     ):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
@@ -254,5 +273,111 @@ def update_status(id):
     conn.close()
 
     return item_details(id)
+
+@app.post("/auction/{item_id}", status_code=201)
+def add_bid(item_id: str, bid_price: str = Form(...)):
+    logger.info(f"New bid: {bid_price} yen for items_id: {item_id}")
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    
+    try:
+        # generate UUID
+        generated_id = str(uuid.uuid4())
+    
+        c.execute("SELECT name FROM items WHERE id = (?)", (item_id,))
+        data = c.fetchall()
+        
+        (name, ) = data[0]
+
+        c.execute(
+            '''
+            INSERT INTO
+                auction (id, bidder_name, items_id, bid_price, item_name)
+            VALUES 
+                (?, ?, ?, ?, ?)
+            ''',
+            (generated_id, "Bidder 1", item_id, bid_price, name)
+        )
+        conn.commit()
+    except sqlite3.IntegrityError as err:
+        if "UNIQUE constraint" in str(err):
+            logger.error(f"Unhandled error occurred")
+            raise HTTPException(status_code=400, detail=f"This user already has a bid for this item")
+    finally:
+        conn.close()
+
+    return {name}
+
+@app.get("/auction")
+def show_auction():
+    conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        SELECT 
+            id,
+            bidder_name,
+            items_id,
+            bid_price,
+            item_name
+        FROM 
+            auction
+        '''
+    )
+    response = { "items": [row for row in c] }
+    conn.close()
+
+    return response
+
+@app.put("/auction/{item_id}")
+def update_bid(item_id: str, bid_price: str = Form(...)):
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+    
+    c.execute(
+    '''
+    UPDATE 
+        auction
+    SET
+        bid_price = (?)
+    WHERE
+        items_id = ? AND bidder_name = "Bidder 1"
+    ''',
+        (bid_price, item_id)
+    )
+    conn.commit()
+    conn.close()
+
+    if c.rowcount > 0:
+        return {"message": f"bid price updated: {bid_price}"}
+
+    logger.debug(f"item with id {item_id} not found")
+    raise HTTPException(status_code=404, detail=f"Item not found")
+
+@app.delete("/auction/{item_id}")
+def delete_bid(item_id: str):
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+
+    c.execute(
+    '''
+    DELETE FROM 
+        auction
+    WHERE
+        items_id = ? AND bidder_name = "Bidder 1"
+    ''',
+        (item_id,)
+    )
+    conn.commit()
+    conn.close()
+
+    if c.rowcount > 0:
+        return {"message": f"bid for {item_id} is deleted"}
+
+    logger.debug(f"item with id {item_id} not found")
+    raise HTTPException(status_code=404, detail=f"Item not found")
 
 init_db()
