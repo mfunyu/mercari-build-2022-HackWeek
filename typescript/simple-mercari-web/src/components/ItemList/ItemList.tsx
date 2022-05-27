@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 
 interface Item {
-  id: number;
+  id: string;
   name: string;
   category: string;
   image: string;
   price: string;
 };
+
+type bidPrice = {
+  price: string
+}
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 const placeholderImage = process.env.PUBLIC_URL + '/logo192.png';
@@ -29,10 +33,42 @@ const customStyles = {
 };
 
 export const ItemList: React.FC<Prop> = (props) => {
+  const { reload = true, onLoadCompleted } = props;
   let subtitle: HTMLHeadingElement| null;
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [selectedItemId, setSelectedItemId] = React.useState("")
 
-  function openModal() {
+  const initialState = {
+    price: "",
+  };
+  const [values, setValues] = useState<bidPrice>(initialState);
+  const onValueChange = (event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+    setValues(
+      {price: event.target.value}
+    )
+  };
+
+  const submitBid = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const data = new FormData()
+    console.log(values)
+    console.log(values.price)
+    data.append('bid_price', values.price)
+    fetch(server.concat(`/auction/${selectedItemId}`),
+    {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+    }).then(response => {
+      console.log('POST status:', response.statusText);
+    }).catch((error) => {
+      console.error('POST error:', error);
+    })
+
+    closeModal();
+  }
+
+  function openModal(): any {
     setIsOpen(true);
   }
 
@@ -45,7 +81,6 @@ export const ItemList: React.FC<Prop> = (props) => {
   function closeModal() {
     setIsOpen(false);
   }
-  const { reload = true, onLoadCompleted } = props;
   const [items, setItems] = useState<Item[]>([])
   const fetchItems = () => {
     fetch(server.concat('/items'),
@@ -79,7 +114,6 @@ export const ItemList: React.FC<Prop> = (props) => {
       {items.map((item) => {
         return (
           <div key={item.id} className='ItemList'>
-            {/* TODO: Task 1: Replace the placeholder image with the item image */}
             <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
             <p>
               <span className="item_label">Name:</span> {item.name}
@@ -89,7 +123,7 @@ export const ItemList: React.FC<Prop> = (props) => {
               <span className="item_label">Price:</span> {item.price}
             </p>
             <p>
-              <button type='submit' onClick={openModal}>Bid</button><button type='submit'>Buy Now</button>
+              <button type='submit' onClick={() => {openModal(); setSelectedItemId(item.id);}}>Bid</button><button type='submit'>Buy Now</button>
             </p>
           </div>
         )
@@ -103,9 +137,11 @@ export const ItemList: React.FC<Prop> = (props) => {
       >
         <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Create Bid</h2>
         <div>Enter bid amount</div>
-        <input type='text' required />
-        <button type='submit'>Make a bid</button>
-        <button type='submit' onClick={closeModal}>close</button>
+        <form onSubmit={submitBid}>
+          <input type='text' onChange={onValueChange} required />
+          <button type='submit'>Make a bid</button>
+        </form>
+        <button onClick={() => {closeModal(); setSelectedItemId("");}}>close</button>
       </Modal>
     </div>
   )

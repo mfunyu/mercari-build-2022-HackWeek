@@ -82,7 +82,6 @@ export const Listing: React.FC<Prop> = (props) => {
     data.append('price', values.price)
     const isAuction = checked ? 1 : 0
     data.append('is_auction', isAuction.toString())
-    console.log(isAuction.toString())
 
     fetch(server.concat('/items'), {
       method: 'POST',
