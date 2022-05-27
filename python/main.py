@@ -291,4 +291,27 @@ def add_bid(item_id: str, bid_price: str = Form(...)):
 
     return {data[0]}
 
+@app.get("/auction/{item_id}")
+def show_auction(item_id):
+    conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        SELECT 
+            bidder_name,
+            bid_price
+        FROM 
+            auction 
+        WHERE
+            items_id = ?
+        ''',
+        (item_id,)
+    )
+    response = { "items": [row for row in c] }
+    conn.close()
+
+    return response
+
 init_db()
