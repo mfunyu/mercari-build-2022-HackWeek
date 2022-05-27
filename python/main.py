@@ -271,7 +271,6 @@ def add_bid(item_id: str, bid_price: str = Form(...)):
         data = c.fetchall()
         
         (name, ) = data[0]
-        print(name)
         c.execute(
             '''
             INSERT INTO
