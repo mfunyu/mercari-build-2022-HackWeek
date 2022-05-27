@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Modal from 'react-modal';
 
 interface Item {
   id: number;
@@ -16,7 +17,34 @@ interface Prop {
   onLoadCompleted?: () => void;
 }
 
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
+
 export const ItemList: React.FC<Prop> = (props) => {
+  let subtitle: HTMLHeadingElement| null;
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    if (!subtitle) return
+    subtitle.style.color = '#f00';
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
   const { reload = true, onLoadCompleted } = props;
   const [items, setItems] = useState<Item[]>([])
   const fetchItems = () => {
@@ -60,9 +88,25 @@ export const ItemList: React.FC<Prop> = (props) => {
               <br />
               <span className="item_label">Price:</span> {item.price}
             </p>
+            <p>
+              <button type='submit' onClick={openModal}>Bid</button><button type='submit'>Buy Now</button>
+            </p>
           </div>
         )
       })}
+      <Modal
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Create Bid</h2>
+        <div>Enter bid amount</div>
+        <input type='text' required />
+        <button type='submit'>Make a bid</button>
+        <button type='submit' onClick={closeModal}>close</button>
+      </Modal>
     </div>
   )
 };
