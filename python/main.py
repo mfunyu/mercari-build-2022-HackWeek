@@ -25,6 +25,22 @@ app.add_middleware(
 dbfile = "../db/items.db"
 dbname = "mercari.sqlite3"
 
+categories = [
+    "Women",
+    "Men",
+    "Baby / Kids",
+    "Interior / House / Accessories",
+    "Books / Music / Games",
+    "Toys / Hobbies / Goods",
+    "Cosmetic / Perfume / Beauties",
+    "Home appliances / Smartphones / Cameras",
+    "Sport / Leisure",
+    "Handmade",
+    "Ticket",
+    "Car / Motorcycle",
+    "others"
+]
+
 def init_db():
     if os.path.isfile(dbname):
         return
@@ -35,6 +51,9 @@ def init_db():
     with open(dbfile, 'r') as f:
         sql_as_string = f.read()
         c.executescript(sql_as_string)
+
+    for c in categories:
+        add_category(c)
 
     conn.commit()
     conn.close()
@@ -47,7 +66,7 @@ def root():
 @app.post("/items", status_code=201)
 async def add_item(
         name: str = Form(...), category: str = Form(...), image: UploadFile = File(...),
-        price: int = Form(7000), is_auction: int = Form(0), on_sale: int = Form(1)
+        price: int = Form(...), is_auction: int = Form(0), on_sale: int = Form(1)
     ):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
