@@ -260,29 +260,36 @@ def update_status(id):
 def add_bid(item_id: str, bid_price: str = Form(...)):
     logger.info(f"New bid: {bid_price} yen for items_id: {item_id}")
 
-    # generate UUID
-    generated_id = str(uuid.uuid4())
-
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
-
-    c.execute("SELECT name FROM items WHERE id = (?)", (item_id,))
-    data = c.fetchall()
     
-    (name, ) = data[0]
-    print(name)
-    c.execute(
-        '''
-        INSERT INTO
-            auction (id, bidder_name, items_id, bid_price, item_name)
-        VALUES 
-            (?, ?, ?, ?, ?)
-        ''',
-        (generated_id, "Bidder 1", item_id, bid_price, name)
-    )
+    try:
+        # generate UUID
+        generated_id = str(uuid.uuid4())
+    
+        c.execute("SELECT name FROM items WHERE id = (?)", (item_id,))
+        data = c.fetchall()
+        
+        (name, ) = data[0]
+        print(name)
+        c.execute(
+            '''
+            INSERT INTO
+                auction (id, bidder_name, items_id, bid_price, item_name)
+            VALUES 
+                (?, ?, ?, ?, ?)
+            ''',
+            (generated_id, "Bidder 1", item_id, bid_price, name)
+        )
+        conn.commit()
+    except sqlite3.IntegrityError as err:
+        if "UNIQUE constraint" in str(err):
+            raise HTTPException(status_code=400, detail=f"This user already has bid for this item")
+            logger.error(f"Unhandled error occurred")
+            raise err
+    finally:
+        conn.close()
 
-    conn.commit()
-    conn.close()   
     return {data[0]}
     #return {"message": f"item received: {name}"}
 
