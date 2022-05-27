@@ -271,7 +271,7 @@ def add_bid(item_id: str, bid_price: str = Form(...)):
         data = c.fetchall()
         
         (name, ) = data[0]
-        print(name)
+
         c.execute(
             '''
             INSERT INTO
@@ -284,14 +284,15 @@ def add_bid(item_id: str, bid_price: str = Form(...)):
         conn.commit()
     except sqlite3.IntegrityError as err:
         if "UNIQUE constraint" in str(err):
-            raise HTTPException(status_code=400, detail=f"This user already has bid for this item")
+
+            raise HTTPException(status_code=400, detail=f"This user already has a bid for this item")
+
             logger.error(f"Unhandled error occurred")
             raise err
     finally:
         conn.close()
 
     return {data[0]}
-    #return {"message": f"item received: {name}"}
 
 @app.get("/auction/{item_id}")
 def show_auction(item_id):
