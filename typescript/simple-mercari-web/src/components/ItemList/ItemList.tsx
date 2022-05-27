@@ -51,8 +51,6 @@ export const ItemList: React.FC<Prop> = (props) => {
   const submitBid = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData()
-    console.log(values)
-    console.log(values.price)
     data.append('bid_price', values.price)
     fetch(server.concat(`/auction/${selectedItemId}`),
     {
