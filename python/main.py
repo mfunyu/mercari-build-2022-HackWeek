@@ -290,6 +290,5 @@ def add_bid(item_id: str, bid_price: str = Form(...)):
         conn.close()
 
     return {data[0]}
-    #return {"message": f"item received: {name}"}
 
 init_db()
