@@ -302,7 +302,7 @@ export const ItemList: React.FC<Prop> = (props) => {
           <input type='text' onChange={onValueChange} required />
           <button type='submit'>Make a bid</button>
         </form>
-        <button onClick={() => {closeModal(); setSelectedItemId("");}}>close</button>
+        <button className='close-button' onClick={() => {closeModal(); setSelectedItemId("");}}>close</button>
       </Modal>
       <Modal
         isOpen={editModalIsOpen}
