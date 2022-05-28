@@ -11,7 +11,7 @@
 
 input[type=text], [type=file],
 select,
-button,
+.form>button,
 .upload {
 	background: var(--alias-color-background-primary-default);
 	border: 1px solid var(--alias-color-border-primary-default);
@@ -72,7 +72,7 @@ input[type=file] {
 }
 
 /* List Items (Sell button) */
-button[type=submit] {
+.form>button[type=submit] {
 	padding: 12px 20px;
 	font-weight: bold;
 	color: var(--alias-color-text-inverse-default);
@@ -80,7 +80,7 @@ button[type=submit] {
 	fill: var(--alias-color-text-inverse-default);
 }
 
-button[type=submit]:hover {
+.form>button[type=submit]:hover {
 	background-color: var(--alias-color-background-attention-highlight);
 }
 

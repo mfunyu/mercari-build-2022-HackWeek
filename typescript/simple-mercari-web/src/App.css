@@ -35,17 +35,31 @@ button[type=submit]:hover,
   background-color: #dfb8b8;
 }
 
-.close-button {
-  padding: 12px 20px;
-  margin: 10px;
-  border: none;
-  border-radius: 4px;
-  background-color: #dbc6c6;
-  font-weight: bold;
-  cursor: pointer;
+button[type=submit] {
+	appearance: none;
+	font-size: 14px;
+	padding: 5px;
+	background: var(--alias-color-background-primary-default);
+	border: 1px solid var(--alias-color-border-primary-default);
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-weight: 400;
+	line-height: 1.4em;
+	margin-bottom: 1em;
+	outline: none;
+	width: 100%;
+	font-weight: bold;
+	color: var(--alias-color-text-inverse-default);
+	background-color: var(--alias-color-background-attention-default);
+	fill: var(--alias-color-text-inverse-default);
 }
-.close-button:hover {
-  background-color: #dfb8b8;
+
+button[type=submit]:disabled {
+	font-weight: normalk;
+	color: var(--alias-color-text-secondary-default) !important;
+    background-color: var(--alias-color-background-disabled-default) !important;
+    fill: var(--alias-color-icon-secondary-active) !important;
+    cursor: not-allowed !important;
 }
 
 .item_label {
