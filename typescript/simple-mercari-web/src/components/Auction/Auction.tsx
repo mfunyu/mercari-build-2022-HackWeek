@@ -132,7 +132,7 @@ export default function Auction() {
     return(
         <div>
             <header className='Title'>
-                <p><Link to="/">Listing</Link> | <Link to="/auction">Auction</Link></p>
+                <p><Link to="/">Items</Link> | <Link to="/listing">Listing</Link> | <Link to="/auction">Auction</Link></p>
             </header>
             <div className="auction-table">
                 <table>
