@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './App.css';
 import { ItemList } from './components/ItemList';
-import { Listing } from './components/Listing';
 import {
   Link
 } from "react-router-dom";
@@ -12,11 +11,12 @@ function App() {
   return (
     <div>
       <header className='Title'>
-        <p><Link to="/">Listing</Link> | <Link to="/auction">Auction</Link></p>
+          <div className='desktop-container'>
+            <a className='menu-item' href="/">Items</a>
+            <a className='menu-item' href="/listing">Listing</a>
+            <a className='menu-button' href="/auction">Auction</a>	
+          </div>
       </header>
-      <div>
-        <Listing onListingCompleted={() => setReload(true)} />
-      </div>
       <div>
         <ItemList reload={reload} onLoadCompleted={() => setReload(false)} />
       </div>

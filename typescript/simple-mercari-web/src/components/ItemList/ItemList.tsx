@@ -223,7 +223,7 @@ export const ItemList: React.FC<Prop> = (props) => {
 
   const EditBid = ({ id }: { id: string }) => {
     if(bids.filter((bid) => bid.items_id === id).length > 0 && items.filter((item) => item.id === id)[0].on_sale === 1) {
-      return <button type='submit' onClick={() => {openEditModal(); setSelectedItemId(id);}}>Edit Bid</button>
+      return <button className='bid' type='submit' onClick={() => {openEditModal(); setSelectedItemId(id);}}>Edit Bid</button>
     } else {
       return <button type='submit' disabled>Edit Bid</button>
     }
@@ -262,11 +262,14 @@ export const ItemList: React.FC<Prop> = (props) => {
   }
 
   return (
+    <div className='Content'>
     <div className='wrapper' >
       {items.map((item) => {
         return (
           <div key={item.id} className='ItemList'>
-            <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
+            <div className='image-box'>
+              <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
+            </div>
             <p>
               <span className="item_label">Name:</span> {item.name}
               <br />
@@ -279,12 +282,14 @@ export const ItemList: React.FC<Prop> = (props) => {
               <Sold id={item.id}></Sold>
             </p>
             <p>
-              <CreateBid id={item.id} /><BuyNow id={item.id} />
+              <BuyNow id={item.id} />
+              <CreateBid id={item.id} />
               <EditBid id={item.id} />
             </p>
           </div>
         )
-      })}
+    })}
+    </div>
       <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
@@ -298,7 +303,7 @@ export const ItemList: React.FC<Prop> = (props) => {
           <input type='text' onChange={onValueChange} required />
           <button type='submit'>Make a bid</button>
         </form>
-        <button onClick={() => {closeModal(); setSelectedItemId("");}}>close</button>
+        <button className='close-button' onClick={() => {closeModal(); setSelectedItemId("");}}>close</button>
       </Modal>
       <Modal
         isOpen={editModalIsOpen}
