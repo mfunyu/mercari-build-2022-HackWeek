@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 
 interface Item {
@@ -7,6 +7,16 @@ interface Item {
   category: string;
   image: string;
   price: string;
+  is_auction: number;
+  on_sale: number;
+};
+
+interface Bid {
+  id: string;
+  bidder_name: string;
+  items_id: string;
+  bid_price: string;
+  item_name: string;
 };
 
 type bidPrice = {
@@ -59,10 +69,11 @@ export const ItemList: React.FC<Prop> = (props) => {
       body: data,
     }).then(response => {
       console.log('POST status:', response.statusText);
+    }).then(() =>{
+      fetchBids()
     }).catch((error) => {
       console.error('POST error:', error);
     })
-
     closeModal();
   }
 
@@ -101,11 +112,50 @@ export const ItemList: React.FC<Prop> = (props) => {
       })
   }
 
+  const [bids, setBids] = useState<Bid[]>([])
+  const fetchBids = () => {
+      fetch(server.concat('/auction'),
+          {
+              method: 'GET',
+              mode: 'cors',
+              headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+              },
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log('GET success:', data);
+              setBids(data.items);
+              onLoadCompleted && onLoadCompleted();
+          })
+          .catch(error => {
+              console.error('GET error:', error)
+          })
+  }
+
   useEffect(() => {
     if (reload) {
       fetchItems();
+      fetchBids();
     }
   }, [reload]);
+
+  const EditBid = ({ id }: { id: string }) => {
+    if(bids.filter((bid) => bid.items_id === id).length > 0) {
+      return <button type='submit'>Edit Bid</button>
+    } else {
+      return <button type='submit' disabled>Edit Bid</button>
+    }
+  }
+
+  const CreateBid = ({ id }: { id: string }) => {
+    if(bids.filter((bid) => bid.items_id === id).length === 0) {
+      return <button type='submit' onClick={() => {openModal(); setSelectedItemId(id);}}>Bid</button>
+    } else {
+      return <button type='submit' disabled>Bid</button>
+    }
+  }
 
   return (
     <div className='wrapper' >
@@ -121,7 +171,8 @@ export const ItemList: React.FC<Prop> = (props) => {
               <span className="item_label">Price:</span> {item.price}
             </p>
             <p>
-              <button type='submit' onClick={() => {openModal(); setSelectedItemId(item.id);}}>Bid</button><button type='submit'>Buy Now</button>
+              <CreateBid id={item.id} /><button type='submit'>Buy Now</button>
+              <EditBid id={item.id} />
             </p>
           </div>
         )
