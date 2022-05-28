@@ -168,6 +168,22 @@ export const ItemList: React.FC<Prop> = (props) => {
           })
   }
 
+  const deleteBid = () => {
+    fetch(server.concat(`/auction/${selectedItemId}`),
+    {
+      method: 'DELETE',
+      mode: 'cors',
+    }).then(response => {
+      console.log('DELETE status:', response.statusText);
+    }).then(() =>{
+      fetchBids();
+      fetchItems();
+    }).catch((error) => {
+      console.error('DELETE error:', error);
+    })
+    closeEditModal();
+  }
+
   useEffect(() => {
     if (reload) {
       fetchItems();
@@ -250,7 +266,8 @@ export const ItemList: React.FC<Prop> = (props) => {
           <input type='text' onChange={onValueChange} required />
           <button type='submit'>Edit bid</button>
         </form>
-        <button onClick={() => {closeEditModal(); setSelectedItemId("");}}>close</button>
+        <button type='submit' onClick={() => {closeEditModal(); setSelectedItemId(""); deleteBid();}}>Delete bid</button>
+        <button className='close-button' onClick={() => {closeEditModal(); setSelectedItemId("");}}>close</button>
       </Modal>
     </div>
   )
