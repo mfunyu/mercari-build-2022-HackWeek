@@ -245,6 +245,13 @@ export const ItemList: React.FC<Prop> = (props) => {
       return <span></span>
     }
   }
+  const Sold = ({ id }: { id: string }) => {
+    if(items.filter((item) => item.id === id)[0].on_sale === 1) {
+      return <span></span>
+    } else {
+      return <span>Sold</span>
+    }
+  }
 
   const BuyNow = ({ id }: { id: string }) => {
     if(items.filter((item) => item.id === id)[0].on_sale === 1) {
@@ -268,6 +275,8 @@ export const ItemList: React.FC<Prop> = (props) => {
               <span className="item_label">Price:</span> {item.price}
               <br />
               <CurrentBid id={item.id}></CurrentBid>
+              <br />
+              <Sold id={item.id}></Sold>
             </p>
             <p>
               <CreateBid id={item.id} /><BuyNow id={item.id} />
