@@ -282,7 +282,8 @@ export const ItemList: React.FC<Prop> = (props) => {
               <Sold id={item.id}></Sold>
             </p>
             <p>
-              <CreateBid id={item.id} /><BuyNow id={item.id} />
+              <BuyNow id={item.id} />
+              <CreateBid id={item.id} />
               <EditBid id={item.id} />
             </p>
           </div>
