@@ -6,33 +6,43 @@ body {
 }
 
 .ItemList {
-  background-color: #B8DFD8;
+  background-color: var(--alias-color-background-secondary-default);
   min-height: 8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: left;
   font-size: calc(10px + 1vmin);
-  color: #4C4C6D;
-  border: solid 6px #E8F6EF;
-  border-radius: 20px;
+  color: var(--alias-color-text-primary-default);
+  border-radius: 4px;
   padding: 20px;
 }
 
 .wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	column-gap: 4px;
+}
+
+.image-box {
+	width: 200px;
+	height: 200px;
+	max-width: 200px;
+	max-height: 200px;
+	position: relative;
 }
 
 .image {
-  width: 200px;
-  height: 200px;
-  object-fit: cover; 
-}
-
-button[type=submit]:hover,
-.form label.upload:hover {
-  background-color: #dfb8b8;
+	position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    object-fit: contain;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.1s;
+    transition-property: opacity;
 }
 
 button[type=submit] {
