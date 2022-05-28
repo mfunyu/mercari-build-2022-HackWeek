@@ -12,13 +12,13 @@ interface Bid {
 };
 
 interface Item {
-    id: string;
-    name: string;
     category: string;
+    id: string;
     image: string;
-    price: string;
     is_auction: number;
+    name: string;
     on_sale: number;
+    price: string;
 };
 
 const customStyles = {
