@@ -62,6 +62,11 @@ button[type=submit] {
 	color: var(--alias-color-text-inverse-default);
 	background-color: var(--alias-color-background-attention-default);
 	fill: var(--alias-color-text-inverse-default);
+	cursor: pointer;
+}
+
+button[type=submit]:hover {
+	background-color: var(--alias-color-background-attention-highlight);
 }
 
 button[type=submit]:disabled {
@@ -70,6 +75,30 @@ button[type=submit]:disabled {
     background-color: var(--alias-color-background-disabled-default) !important;
     fill: var(--alias-color-icon-secondary-active) !important;
     cursor: not-allowed !important;
+}
+
+.close-button {
+	border: 1px solid var(--alias-color-border-primary-default);
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.4em;
+	margin-bottom: 1em;
+	outline: none;
+	text-align: center;
+	border-radius: 4px;
+	font-weight: bold;
+	width: 40%;
+	cursor: pointer;
+	color: var(--alias-color-text-attention-default);
+	background-color: transparent;
+	border-color: var(--alias-color-border-attention-default);
+	fill: var(--alias-color-icon-attention-default);
+}
+
+.close-button:hover {
+	background-color: var(--alias-color-background-attentionThin-highlight);
 }
 
 .item_label {
