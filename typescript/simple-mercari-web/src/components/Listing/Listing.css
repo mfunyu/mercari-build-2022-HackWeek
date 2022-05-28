@@ -1,118 +1,120 @@
-body {
-  font-size: 16px;
-}
-.App {
-  text-align: center;
-}
-
-.Listing {
-  background-color: #E8F6EF;
-  min-height: 8vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: left;
-  font-size: calc(10px + 1vmin);
-  color: #4C4C6D;
+*,
+:after,
+:before {
+	/* -webkit-tap-highlight-color: transparent; */
+	box-sizing: border-box;
 }
 
-.ItemList {
-  background-color: #B8DFD8;
-  min-height: 8vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: left;
-  font-size: calc(10px + 1vmin);
-  color: #4C4C6D;
-  border: solid 6px #E8F6EF;
-  border-radius: 20px;
-  padding: 20px;
-}
-
-.wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-.image {
-  width: 200px;
-  height: 200px;
-  object-fit: cover; 
-}
-
-input[type=text] {
-  padding: 12px 20px;
-  margin: 10px;
-  border: none;
-  border-radius: 4px;
-}
-
-select {
-  padding: 12px 20px;
-  margin: 10px;
-  border: none;
-  border-radius: 4px;
-  background-color: #FFFFFF;
+.form {
+	display: block;
 }
 
 .form input,
 .form select,
 .form button,
 .form label.upload {
-  font-size: 16px;
+	font-size: 16px;
 }
 
-.form label.upload {
-  padding: 12px 20px;
-  margin: 10px;
-  color: #4C4C6D; 
-  background-color: #FFFFFF;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
+.image {
+	width: 200px;
+	height: 200px;
+	object-fit: cover;
+}
+
+input,
+select,
+button,
+label {
+	background: var(--alias-color-background-primary-default);
+	border: 1px solid var(--alias-color-border-primary-default);
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.4em;
+	margin-bottom: 1em;
+	outline: none;
+	width: 100%;
+}
+
+input[type=text],
+[type=checkbox] {
+	appearance: none;
+	color: var(--alias-color-text-primary-default);
+	flex: 1 1;
+	outline: none;
+	padding: 16px;
+}
+
+select {
+	appearance: none;
+	height: 55px;
+	padding: 0 44px 0 16px;
+}
+
+input:invalid, select:invalid {
+	color: var(--alias-color-text-placeholder-default);
+	border-color: var(--alias-color-border-attention-default);
+}
+
+.upload {
+	float: left;
+	padding: 12px 20px;
+	text-align: center;
+	/* border: none; */
+	border-radius: 4px;
+	font-weight: bold;
+	width: 100%;
+	cursor: pointer;
+	color: var(--alias-color-text-attention-default);
+	background-color: transparent;
+	border-color: var(--alias-color-border-attention-default);
+	fill: var(--alias-color-icon-attention-default);
 }
 
 input[type=file] {
-  display:none;
+	display: none;
 }
 
 button[type=submit] {
-  padding: 12px 20px;
-  margin: 10px;
-  border: none;
-  border-radius: 4px;
-  background-color: #dbc6c6;
-  font-weight: bold;
-  cursor: pointer;
+	padding: 12px 20px;
+	font-weight: bold;
+	color: var(--alias-color-text-inverse-default);
+	background-color: var(--alias-color-background-attention-default);
+	fill: var(--alias-color-text-inverse-default);
 }
 
-button[type=submit]:hover,
-.form label.upload:hover {
-  background-color: #dfb8b8;
+button[type=submit]:hover {
+	background-color: var(--alias-color-background-attention-highlight);
 }
+
+.form label.upload:hover {
+	background-color: var(--alias-color-background-attentionThin-highlight);
+}
+
 
 .item_label {
-  font-weight:bold; 
+	font-weight: bold;
 }
 
 .auction-table {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center
 }
 
 .App-link {
-  color: #61dafb;
+	color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
 }
