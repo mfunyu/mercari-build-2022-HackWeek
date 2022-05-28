@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './Listing.css'
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 
@@ -19,8 +20,7 @@ type Category = {
   name: string,
 }
 
-export const Listing: React.FC<Prop> = (props) => {
-  const { onListingCompleted } = props;
+export default function Listing() {
   const initialState = {
     name: "",
     category: "",
@@ -90,13 +90,21 @@ export const Listing: React.FC<Prop> = (props) => {
     })
       .then(response => {
         console.log('POST status:', response.statusText);
-        onListingCompleted && onListingCompleted();
       })
       .catch((error) => {
         console.error('POST error:', error);
       })
   };
   return (
+    <div>
+    <header className='Title'>
+        <div className='desktop-container'>
+            <a className='menu-item' href="/">Items</a>
+            <a className='menu-item' href="/listing">Listing</a>
+            <a className='menu-button' href="/auction">Auction</a>
+        </div>
+    </header>
+    <div className='Content'>
     <div className='Listing'>
       <form onSubmit={onSubmit}>
         <div className="form">
@@ -117,13 +125,15 @@ export const Listing: React.FC<Prop> = (props) => {
         </div>
       </form>
     </div>
+    </div>
+    </div>
   );
 }
 
 // @ts-ignore
 const Checkbox = ({label, value, onChange}) => {
   return (
-    <label>
+    <label className='checkbox'>
       <input type="checkbox" checked={value} onChange={onChange} />
       {label}
     </label>
