@@ -117,8 +117,11 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
 
 @app.get('/protected')
 def protected_route(user=Depends(manager)):
-    del user["password"]
-    return {'user': user}
+    user = {
+        "id": user["id"],
+        "username": user["username"]
+    }
+    return user
 
 @app.post("/register")
 async def create_users(username: str = Form(...), password: str = Form(...)):
