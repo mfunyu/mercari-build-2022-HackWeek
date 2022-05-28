@@ -1,6 +1,5 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"
 import Modal from 'react-modal';
 
 interface Bid {
@@ -132,9 +131,13 @@ export default function Auction() {
     return(
         <div>
             <header className='Title'>
-                <p><Link to="/">Items</Link> | <Link to="/listing">Listing</Link> | <Link to="/auction">Auction</Link></p>
+                <div className='desktop-container'>
+                    <a className='menu-item' href="/">Items</a>
+                    <a className='menu-item' href="/listing">Listing</a>
+                    <a className='menu-button' href="/auction">Auction</a>
+                </div>
             </header>
-			<div className="Content">
+            <div className="Content">
             <div className="auction-table">
                 <table>
                     <tr>

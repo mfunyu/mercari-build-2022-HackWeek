@@ -11,7 +11,11 @@ function App() {
   return (
     <div>
       <header className='Title'>
-        <p><Link to="/">Items</Link> | <Link to="/listing">Listing</Link> | <Link to="/auction">Auction</Link></p>
+          <div className='desktop-container'>
+            <a className='menu-item' href="/">Items</a>
+            <a className='menu-item' href="/listing">Listing</a>
+            <a className='menu-button' href="/auction">Auction</a>	
+          </div>
       </header>
       <div>
         <ItemList reload={reload} onLoadCompleted={() => setReload(false)} />

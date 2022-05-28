@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './Listing.css'
-import { Link } from "react-router-dom"
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 
@@ -99,9 +98,13 @@ export default function Listing() {
   return (
     <div>
     <header className='Title'>
-        <p><Link to="/">Items</Link> | <Link to="/listing">Listing</Link> | <Link to="/auction">Auction</Link></p>
+        <div className='desktop-container'>
+            <a className='menu-item' href="/">Items</a>
+            <a className='menu-item' href="/listing">Listing</a>
+            <a className='menu-button' href="/auction">Auction</a>
+        </div>
     </header>
-	<div className='Content'>
+    <div className='Content'>
     <div className='Listing'>
       <form onSubmit={onSubmit}>
         <div className="form">
@@ -123,14 +126,14 @@ export default function Listing() {
       </form>
     </div>
     </div>
-	</div>
+    </div>
   );
 }
 
 // @ts-ignore
 const Checkbox = ({label, value, onChange}) => {
   return (
-    <label>
+    <label className='checkbox'>
       <input type="checkbox" checked={value} onChange={onChange} />
       {label}
     </label>

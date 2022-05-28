@@ -9,23 +9,10 @@
 	display: block;
 }
 
-.form input,
-.form select,
-.form button,
-.form label.upload {
-	font-size: 16px;
-}
-
-.image {
-	width: 200px;
-	height: 200px;
-	object-fit: cover;
-}
-
-input,
+input[type=text], [type=file],
 select,
 button,
-label {
+.upload {
 	background: var(--alias-color-background-primary-default);
 	border: 1px solid var(--alias-color-border-primary-default);
 	border-radius: 4px;
@@ -38,8 +25,8 @@ label {
 	width: 100%;
 }
 
-input[type=text],
-[type=checkbox] {
+/* Name, Price */
+input[type=text] {
 	appearance: none;
 	color: var(--alias-color-text-primary-default);
 	flex: 1 1;
@@ -47,15 +34,22 @@ input[type=text],
 	padding: 16px;
 }
 
+/* Category */
 select {
 	appearance: none;
 	height: 55px;
 	padding: 0 44px 0 16px;
 }
 
+/* on error */
 input:invalid, select:invalid {
 	color: var(--alias-color-text-placeholder-default);
 	border-color: var(--alias-color-border-attention-default);
+}
+
+/* Upload Image */
+input[type=file] {
+	display: none;
 }
 
 .upload {
@@ -73,10 +67,11 @@ input:invalid, select:invalid {
 	fill: var(--alias-color-icon-attention-default);
 }
 
-input[type=file] {
-	display: none;
+.upload:hover {
+	background-color: var(--alias-color-background-attentionThin-highlight);
 }
 
+/* List Items (Sell button) */
 button[type=submit] {
 	padding: 12px 20px;
 	font-weight: bold;
@@ -89,32 +84,17 @@ button[type=submit]:hover {
 	background-color: var(--alias-color-background-attention-highlight);
 }
 
-.form label.upload:hover {
-	background-color: var(--alias-color-background-attentionThin-highlight);
-}
-
-
-.item_label {
-	font-weight: bold;
-}
-
-.auction-table {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center
-}
-
-.App-link {
-	color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-
-	to {
-		transform: rotate(360deg);
-	}
+/* Checkbox */
+.checkbox {
+	background: var(--alias-color-background-primary-default);
+	box-sizing: border-box;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.4em;
+	margin-bottom: 1em;
+	outline: none;
+	width: 100%;
+	display: inline-block;
+	text-align: center;
+	padding: 16px;
 }
