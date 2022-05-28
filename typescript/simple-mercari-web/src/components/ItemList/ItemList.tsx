@@ -223,7 +223,7 @@ export const ItemList: React.FC<Prop> = (props) => {
 
   const EditBid = ({ id }: { id: string }) => {
     if(bids.filter((bid) => bid.items_id === id).length > 0 && items.filter((item) => item.id === id)[0].on_sale === 1) {
-      return <button type='submit' onClick={() => {openEditModal(); setSelectedItemId(id);}}>Edit Bid</button>
+      return <button className='bid' type='submit' onClick={() => {openEditModal(); setSelectedItemId(id);}}>Edit Bid</button>
     } else {
       return <button type='submit' disabled>Edit Bid</button>
     }
@@ -262,14 +262,14 @@ export const ItemList: React.FC<Prop> = (props) => {
   }
 
   return (
-	<div className='Content'>
+    <div className='Content'>
     <div className='wrapper' >
       {items.map((item) => {
         return (
           <div key={item.id} className='ItemList'>
-			<div className='image-box'>
+            <div className='image-box'>
               <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
-			</div>
+            </div>
             <p>
               <span className="item_label">Name:</span> {item.name}
               <br />
@@ -288,8 +288,8 @@ export const ItemList: React.FC<Prop> = (props) => {
             </p>
           </div>
         )
-	})}
-	</div>
+    })}
+    </div>
       <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}

@@ -77,7 +77,7 @@ button[type=submit]:disabled {
     cursor: not-allowed !important;
 }
 
-.close-button {
+.close-button, .bid {
 	border: 1px solid var(--alias-color-border-primary-default);
 	border-radius: 4px;
 	box-sizing: border-box;
@@ -91,10 +91,10 @@ button[type=submit]:disabled {
 	font-weight: bold;
 	width: 40%;
 	cursor: pointer;
-	color: var(--alias-color-text-attention-default);
-	background-color: transparent;
-	border-color: var(--alias-color-border-attention-default);
-	fill: var(--alias-color-icon-attention-default);
+	color: var(--alias-color-text-attention-default) !important;
+	background-color: transparent !important;
+	border-color: var(--alias-color-border-attention-default) !important;
+	fill: var(--alias-color-icon-attention-default) !important ;
 }
 
 .close-button:hover {
