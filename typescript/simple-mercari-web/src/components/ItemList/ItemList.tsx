@@ -46,6 +46,7 @@ export const ItemList: React.FC<Prop> = (props) => {
   const { reload = true, onLoadCompleted } = props;
   let subtitle: HTMLHeadingElement| null;
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [buyNowModalOpen, setBuyNowIsOpen] = React.useState(false);
   const [editModalIsOpen, setIsEditOpen] = React.useState(false);
   const [selectedItemId, setSelectedItemId] = React.useState("")
 
@@ -124,6 +125,20 @@ export const ItemList: React.FC<Prop> = (props) => {
   function closeModal() {
     setIsOpen(false);
   }
+
+  function openBuyNowModal(): any {
+    setBuyNowIsOpen(true);
+  }
+
+  function afterOpenBuyNowModal() {
+    // references are now sync'd and can be accessed.
+    if (!subtitle) return
+    subtitle.style.color = '#f00';
+  }
+
+  function closeBuyNowModal() {
+    setBuyNowIsOpen(false);
+  }
   const [items, setItems] = useState<Item[]>([])
   const fetchItems = () => {
     fetch(server.concat('/items'),
@@ -184,6 +199,21 @@ export const ItemList: React.FC<Prop> = (props) => {
     closeEditModal();
   }
 
+  const buyNow = () => {
+    fetch(server.concat(`/update/status/${selectedItemId}`),
+    {
+        method: 'PUT',
+        mode: 'cors',
+    }).then(response => {
+        console.log('PUT status:', response.statusText);
+    }).then(() =>{
+        fetchBids()
+        fetchItems()
+    }).catch((error) => {
+        console.error('PUT error:', error);
+    })
+}
+
   useEffect(() => {
     if (reload) {
       fetchItems();
@@ -192,7 +222,7 @@ export const ItemList: React.FC<Prop> = (props) => {
   }, [reload]);
 
   const EditBid = ({ id }: { id: string }) => {
-    if(bids.filter((bid) => bid.items_id === id).length > 0) {
+    if(bids.filter((bid) => bid.items_id === id).length > 0 && items.filter((item) => item.id === id)[0].on_sale === 1) {
       return <button type='submit' onClick={() => {openEditModal(); setSelectedItemId(id);}}>Edit Bid</button>
     } else {
       return <button type='submit' disabled>Edit Bid</button>
@@ -200,7 +230,7 @@ export const ItemList: React.FC<Prop> = (props) => {
   }
 
   const CreateBid = ({ id }: { id: string }) => {
-    if(bids.filter((bid) => bid.items_id === id).length === 0) {
+    if(bids.filter((bid) => bid.items_id === id).length === 0 && items.filter((item) => item.id === id)[0].on_sale === 1 && items.filter((item) => item.id === id)[0].is_auction === 1) {
       return <button type='submit' onClick={() => {openModal(); setSelectedItemId(id);}}>Bid</button>
     } else {
       return <button type='submit' disabled>Bid</button>
@@ -213,6 +243,14 @@ export const ItemList: React.FC<Prop> = (props) => {
       return <span className="item_label"> Your Bid: {price}</span>
     } else {
       return <span></span>
+    }
+  }
+
+  const BuyNow = ({ id }: { id: string }) => {
+    if(items.filter((item) => item.id === id)[0].on_sale === 1) {
+      return <button type='submit' onClick={() => {openBuyNowModal(); setSelectedItemId(id)}}>Buy Now</button>
+    } else {
+      return <button type='submit' disabled>Buy Now</button>
     }
   }
 
@@ -232,7 +270,7 @@ export const ItemList: React.FC<Prop> = (props) => {
               <CurrentBid id={item.id}></CurrentBid>
             </p>
             <p>
-              <CreateBid id={item.id} /><button type='submit'>Buy Now</button>
+              <CreateBid id={item.id} /><BuyNow id={item.id} />
               <EditBid id={item.id} />
             </p>
           </div>
@@ -268,6 +306,18 @@ export const ItemList: React.FC<Prop> = (props) => {
         </form>
         <button type='submit' onClick={() => {closeEditModal(); setSelectedItemId(""); deleteBid();}}>Delete bid</button>
         <button className='close-button' onClick={() => {closeEditModal(); setSelectedItemId("");}}>close</button>
+      </Modal>
+      <Modal
+        isOpen={buyNowModalOpen}
+        onAfterOpen={afterOpenBuyNowModal}
+        onRequestClose={closeBuyNowModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Confirm buy</h2>
+        <div>Pay full price?</div>
+        <button type='submit' onClick={() => {closeBuyNowModal(); buyNow(); setSelectedItemId("");}}>Buy Now</button>
+        <button className='close-button' onClick={() => {closeBuyNowModal(); setSelectedItemId("");}}>close</button>
       </Modal>
     </div>
   )
