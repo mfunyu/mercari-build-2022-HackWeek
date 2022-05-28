@@ -46,6 +46,7 @@ export const ItemList: React.FC<Prop> = (props) => {
   const { reload = true, onLoadCompleted } = props;
   let subtitle: HTMLHeadingElement| null;
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [editModalIsOpen, setIsEditOpen] = React.useState(false);
   const [selectedItemId, setSelectedItemId] = React.useState("")
 
   const initialState = {
@@ -75,6 +76,39 @@ export const ItemList: React.FC<Prop> = (props) => {
       console.error('POST error:', error);
     })
     closeModal();
+  }
+
+  const submitEditedBid = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const data = new FormData()
+    data.append('bid_price', values.price)
+    fetch(server.concat(`/auction/${selectedItemId}`),
+    {
+      method: 'PUT',
+      mode: 'cors',
+      body: data,
+    }).then(response => {
+      console.log('PUT status:', response.statusText);
+    }).then(() =>{
+      fetchBids()
+    }).catch((error) => {
+      console.error('PUT error:', error);
+    })
+    closeEditModal();
+  }
+
+  function openEditModal(): any {
+    setIsEditOpen(true);
+  }
+
+  function afterEditOpenModal() {
+    // references are now sync'd and can be accessed.
+    if (!subtitle) return
+    subtitle.style.color = '#f00';
+  }
+
+  function closeEditModal() {
+    setIsEditOpen(false);
   }
 
   function openModal(): any {
@@ -143,7 +177,7 @@ export const ItemList: React.FC<Prop> = (props) => {
 
   const EditBid = ({ id }: { id: string }) => {
     if(bids.filter((bid) => bid.items_id === id).length > 0) {
-      return <button type='submit'>Edit Bid</button>
+      return <button type='submit' onClick={() => {openEditModal(); setSelectedItemId(id);}}>Edit Bid</button>
     } else {
       return <button type='submit' disabled>Edit Bid</button>
     }
@@ -154,6 +188,15 @@ export const ItemList: React.FC<Prop> = (props) => {
       return <button type='submit' onClick={() => {openModal(); setSelectedItemId(id);}}>Bid</button>
     } else {
       return <button type='submit' disabled>Bid</button>
+    }
+  }
+
+  const CurrentBid = ({ id }: { id: string }) => {
+    if(bids.filter((bid) => bid.items_id === id).length > 0) {
+      const price = bids.filter((bid) => bid.items_id === id)[0].bid_price
+      return <span className="item_label"> Your Bid: {price}</span>
+    } else {
+      return <span></span>
     }
   }
 
@@ -169,6 +212,8 @@ export const ItemList: React.FC<Prop> = (props) => {
               <span className="item_label">Category:</span> {item.category}
               <br />
               <span className="item_label">Price:</span> {item.price}
+              <br />
+              <CurrentBid id={item.id}></CurrentBid>
             </p>
             <p>
               <CreateBid id={item.id} /><button type='submit'>Buy Now</button>
@@ -191,6 +236,21 @@ export const ItemList: React.FC<Prop> = (props) => {
           <button type='submit'>Make a bid</button>
         </form>
         <button onClick={() => {closeModal(); setSelectedItemId("");}}>close</button>
+      </Modal>
+      <Modal
+        isOpen={editModalIsOpen}
+        onAfterOpen={afterEditOpenModal}
+        onRequestClose={closeEditModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Edit Bid</h2>
+        <div>Enter bid amount</div>
+        <form onSubmit={submitEditedBid}>
+          <input type='text' onChange={onValueChange} required />
+          <button type='submit'>Edit bid</button>
+        </form>
+        <button onClick={() => {closeEditModal(); setSelectedItemId("");}}>close</button>
       </Modal>
     </div>
   )
