@@ -5,12 +5,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Auction from './components/Auction/Auction';
+import Listing from './components/Listing/Listing';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}></Route>
+        <Route path="/listing" element={<Listing />}></Route>
         <Route path="/auction" element={<Auction />}></Route>
       </Routes>
     </BrowserRouter>

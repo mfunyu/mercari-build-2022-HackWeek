@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom"
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 
@@ -19,8 +20,7 @@ type Category = {
   name: string,
 }
 
-export const Listing: React.FC<Prop> = (props) => {
-  const { onListingCompleted } = props;
+export default function Listing() {
   const initialState = {
     name: "",
     category: "",
@@ -90,13 +90,16 @@ export const Listing: React.FC<Prop> = (props) => {
     })
       .then(response => {
         console.log('POST status:', response.statusText);
-        onListingCompleted && onListingCompleted();
       })
       .catch((error) => {
         console.error('POST error:', error);
       })
   };
   return (
+    <div>
+    <header className='Title'>
+        <p><Link to="/">Items</Link> | <Link to="/listing">Listing</Link> | <Link to="/auction">Auction</Link></p>
+    </header>
     <div className='Listing'>
       <form onSubmit={onSubmit}>
         <div className="form">
@@ -116,6 +119,7 @@ export const Listing: React.FC<Prop> = (props) => {
           <button type='submit'>List this item</button>
         </div>
       </form>
+    </div>
     </div>
   );
 }
