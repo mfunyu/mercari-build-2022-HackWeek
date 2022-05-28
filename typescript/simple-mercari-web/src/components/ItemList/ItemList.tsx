@@ -262,12 +262,14 @@ export const ItemList: React.FC<Prop> = (props) => {
   }
 
   return (
+	<div className='Content'>
     <div className='wrapper' >
       {items.map((item) => {
         return (
-			<div className='Content'>
           <div key={item.id} className='ItemList'>
-            <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
+			<div className='image-box'>
+              <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
+			</div>
             <p>
               <span className="item_label">Name:</span> {item.name}
               <br />
@@ -284,9 +286,9 @@ export const ItemList: React.FC<Prop> = (props) => {
               <EditBid id={item.id} />
             </p>
           </div>
-          </div>
         )
-      })}
+	})}
+	</div>
       <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
