@@ -4,11 +4,18 @@ import pathlib
 import sqlite3
 import hashlib
 import uuid
-from fastapi import FastAPI, Form, HTTPException, File, UploadFile
+import bcrypt
+from fastapi import FastAPI, Form, HTTPException, File, UploadFile, Depends
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_login import LoginManager
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi_login.exceptions import InvalidCredentialsException
+
+SECRET = os.environ.get('JWT_SECRET', 'test')
 
 app = FastAPI()
+manager = LoginManager(SECRET, token_url='/login')
 logger = logging.getLogger("uvicorn")
 logger.level = logging.DEBUG
 images = pathlib.Path(__file__).parent.resolve() / "images"
@@ -40,6 +47,7 @@ categories = [
     "others"
 ]
 
+
 def init_db():
     if os.path.isfile(dbname):
         return
@@ -60,6 +68,81 @@ def init_db():
 @app.get("/")
 def root():
     return {"message": "Hello, world!"}
+
+@manager.user_loader()
+async def query_user(username: str):
+    conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        SELECT
+            id, username, password
+        FROM
+            users
+        WHERE
+            username = ?
+        ''',
+        (username,)
+    )
+
+    response = [row for row in c]
+    conn.close()
+
+    if len(response) == 0:
+        return None
+
+    return response[0]
+
+@app.post("/login")
+async def login(data: OAuth2PasswordRequestForm = Depends()):
+    username = data.username
+    password = data.password
+
+    # Get the user DB
+    user = await query_user(username)
+
+    # Confirm password matches
+    if not user:
+        raise InvalidCredentialsException
+    elif not bcrypt.checkpw(bytes(password, 'utf-8'), user['password']):
+        raise InvalidCredentialsException
+
+    access_token = manager.create_access_token(
+        data={'sub': user["username"], 'id': user["id"]}
+    )
+
+    return {'access_token': access_token}
+
+@app.get('/protected')
+def protected_route(user=Depends(manager)):
+    del user["password"]
+    return {'user': user}
+
+@app.post("/register")
+async def create_users(username: str = Form(...), password: str = Form(...)):
+    # generate UUID
+    userid = str(uuid.uuid4())
+    hashed = bcrypt.hashpw(bytes(password, 'utf-8'), bcrypt.gensalt())
+
+    conn = sqlite3.connect(dbname)
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        INSERT INTO
+            users
+        VALUES
+            (?, ?, ?)
+        ''',
+        (userid, username, hashed)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return {"status": "registration complete"}
 
 
 @app.post("/items", status_code=201)
