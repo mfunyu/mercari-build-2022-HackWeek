@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './Listing.css'
 import { Link } from "react-router-dom"
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
@@ -100,6 +101,7 @@ export default function Listing() {
     <header className='Title'>
         <p><Link to="/">Items</Link> | <Link to="/listing">Listing</Link> | <Link to="/auction">Auction</Link></p>
     </header>
+	<div className='Content'>
     <div className='Listing'>
       <form onSubmit={onSubmit}>
         <div className="form">
@@ -121,6 +123,7 @@ export default function Listing() {
       </form>
     </div>
     </div>
+	</div>
   );
 }
 
