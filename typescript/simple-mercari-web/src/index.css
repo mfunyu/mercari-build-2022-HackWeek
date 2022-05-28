@@ -27,7 +27,7 @@ body {
     flex-grow: 1;
     width: 100%;
     outline: none;
-    max-width: 1280px;
+    max-width: 640px;
     margin: 0px auto;
     padding: var(--grid-layout-page-padding-top) var(--grid-layout-page-padding-horizontal) var(--grid-layout-page-padding-bottom);
 }
@@ -142,6 +142,16 @@ code {
     --component-information-bubble-background-transaction: #fff6cf;
     --component-mercari-logo-text-color: #222;
     --focus-ring-color: #89bffd66;
+}
+
+@media (max-width: 567.9px) {
+:root {
+    --grid-layout-gutter: 24px;
+    --grid-layout-inset: 16px;
+    --grid-layout-page-padding-top: 40px;
+    --grid-layout-page-padding-bottom: 64px;
+    --grid-layout-page-padding-horizontal: 36px;
+}
 }
 
 :root {
