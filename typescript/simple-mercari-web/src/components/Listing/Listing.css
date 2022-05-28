@@ -5,6 +5,12 @@
 	box-sizing: border-box;
 }
 
+.Listing {
+	max-width: 640px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .form {
 	display: block;
 }
