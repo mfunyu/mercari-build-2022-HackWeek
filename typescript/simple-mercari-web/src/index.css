@@ -68,7 +68,7 @@ a {
     flex-grow: 1;
     width: 100%;
     outline: none;
-    max-width: 640px;
+    max-width: 1280px;
     margin: 0px auto;
     padding: var(--grid-layout-page-padding-top) var(--grid-layout-page-padding-horizontal) var(--grid-layout-page-padding-bottom);
 }
