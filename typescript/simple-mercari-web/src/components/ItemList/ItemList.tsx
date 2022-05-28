@@ -265,6 +265,7 @@ export const ItemList: React.FC<Prop> = (props) => {
     <div className='wrapper' >
       {items.map((item) => {
         return (
+			<div className='Content'>
           <div key={item.id} className='ItemList'>
             <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
             <p>
@@ -282,6 +283,7 @@ export const ItemList: React.FC<Prop> = (props) => {
               <CreateBid id={item.id} /><BuyNow id={item.id} />
               <EditBid id={item.id} />
             </p>
+          </div>
           </div>
         )
       })}
