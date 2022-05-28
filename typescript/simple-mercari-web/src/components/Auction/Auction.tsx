@@ -134,6 +134,7 @@ export default function Auction() {
             <header className='Title'>
                 <p><Link to="/">Items</Link> | <Link to="/listing">Listing</Link> | <Link to="/auction">Auction</Link></p>
             </header>
+			<div className="Content">
             <div className="auction-table">
                 <table>
                     <tr>
@@ -164,6 +165,7 @@ export default function Auction() {
                 <button type='submit' onClick={() => {closeModal(); setSelectedItemId(""); submitAccept();}}>Accept bid</button>
                 <button onClick={() => {closeModal(); setSelectedItemId("");}}>close</button>
             </Modal>
+        </div>
         </div>
     )
 }

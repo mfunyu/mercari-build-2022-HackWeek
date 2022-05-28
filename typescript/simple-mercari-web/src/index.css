@@ -8,7 +8,146 @@ body {
   background-color: #E8F6EF;
 }
 
+.Title {
+	background-color: #FFE194;
+	min-height: 8vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: left;
+	font-size: calc(15px + 1vmin);
+	color: #4C4C6D;
+	font-family: 'PT Sans', sans-serif;
+	border-bottom: 1px solid var(--alias-color-border-primary-highlight);
+}
+
+.Content {
+    position: relative;
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    width: 100%;
+    outline: none;
+    max-width: 1280px;
+    margin: 0px auto;
+    padding: var(--grid-layout-page-padding-top) var(--grid-layout-page-padding-horizontal) var(--grid-layout-page-padding-bottom);
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+:root {
+    --alias-color-background-primary-highlight: #f5f5f5;
+    --alias-color-background-primary-default: #fff;
+    --alias-color-background-primary-active: #f5f5f5;
+    --alias-color-background-secondary-highlight: #e5e5e5;
+    --alias-color-background-secondary-default: #f5f5f5;
+    --alias-color-background-secondary-active: #e5e5e5;
+    --alias-color-background-tertiary-highlight: #666;
+    --alias-color-background-tertiary-default: #333;
+    --alias-color-background-tertiary-active: #222;
+    --alias-color-background-accent-highlight: #63c5ff;
+    --alias-color-background-accent-default: #0095ee;
+    --alias-color-background-accent-active: #0073cc;
+    --alias-color-background-attention-highlight: #ff6574;
+    --alias-color-background-attention-default: #ff333f;
+    --alias-color-background-attention-active: #e32b36;
+    --alias-color-background-accentThin-highlight: #c9ebff;
+    --alias-color-background-accentThin-default: #e8f8ff;
+    --alias-color-background-accentThin-active: #c9ebff;
+    --alias-color-background-attentionThin-highlight: #ffdcdf;
+    --alias-color-background-attentionThin-default: #fdf1f3;
+    --alias-color-background-attentionThin-active: #ffdcdf;
+    --alias-color-background-success-highlight: #cdfbd2;
+    --alias-color-background-success-default: #e4ffec;
+    --alias-color-background-success-active: #cdfbd2;
+    --alias-color-background-disabled-default: #ccc;
+    --alias-color-overlay-strong: #222c;
+    --alias-color-overlay-middle: #2226;
+    --alias-color-overlay-weak: #2223;
+    --alias-color-text-primary-highlight: #999;
+    --alias-color-text-primary-default: #333;
+    --alias-color-text-primary-active: #222;
+    --alias-color-text-secondary-highlight: #999;
+    --alias-color-text-secondary-default: #666;
+    --alias-color-text-secondary-active: #4c4c4c;
+    --alias-color-text-placeholder-default: #999;
+    --alias-color-text-disabled-default: #ccc;
+    --alias-color-text-accent-highlight: #63c5ff;
+    --alias-color-text-accent-default: #0095ee;
+    --alias-color-text-accent-active: #0073cc;
+    --alias-color-text-link-highlight: #30b2ff;
+    --alias-color-text-link-default: #0073cc;
+    --alias-color-text-link-active: #0056ab;
+    --alias-color-text-attention-highlight: #ff6574;
+    --alias-color-text-attention-default: #ff333f;
+    --alias-color-text-attention-active: #e32b36;
+    --alias-color-text-inverse-highlight: #f5f5f5;
+    --alias-color-text-inverse-default: #fff;
+    --alias-color-text-inverse-active: #f5f5f5;
+    --alias-color-text-success-highlight: #0fbf67;
+    --alias-color-text-success-default: #0aa466;
+    --alias-color-text-success-active: #078962;
+    --alias-color-icon-primary-highlight: #999;
+    --alias-color-icon-primary-default: #333;
+    --alias-color-icon-primary-active: #222;
+    --alias-color-icon-secondary-highlight: #e5e5e5;
+    --alias-color-icon-secondary-default: #ccc;
+    --alias-color-icon-secondary-active: #999;
+    --alias-color-icon-disabled-default: #ccc;
+    --alias-color-icon-accent-highlight: #63c5ff;
+    --alias-color-icon-accent-default: #0095ee;
+    --alias-color-icon-accent-active: #0073cc;
+    --alias-color-icon-link-highlight: #30b2ff;
+    --alias-color-icon-link-default: #0073cc;
+    --alias-color-icon-link-active: #0056ab;
+    --alias-color-icon-attention-highlight: #ff6574;
+    --alias-color-icon-attention-default: #ff333f;
+    --alias-color-icon-attention-active: #e32b36;
+    --alias-color-icon-inverse-highlight: #f5f5f5;
+    --alias-color-icon-inverse-default: #fff;
+    --alias-color-icon-inverse-active: #f5f5f5;
+    --alias-color-icon-success-highlight: #0fbf67;
+    --alias-color-icon-success-default: #0aa466;
+    --alias-color-icon-success-active: #078962;
+    --alias-color-icon-decorativeYellow-highlight: #ffdc74;
+    --alias-color-icon-decorativeYellow-default: #ffb818;
+    --alias-color-icon-decorativeYellow-active: #db9611;
+    --alias-color-border-primary-highlight: #e5e5e5;
+    --alias-color-border-primary-default: #ccc;
+    --alias-color-border-primary-active: #999;
+    --alias-color-border-secondary-highlight: #404040;
+    --alias-color-border-secondary-default: #333;
+    --alias-color-border-secondary-active: #222;
+    --alias-color-border-disabled-default: #ccc;
+    --alias-color-border-accent-highlight: #63c5ff;
+    --alias-color-border-accent-default: #0095ee;
+    --alias-color-border-accent-active: #0073cc;
+    --alias-color-border-attention-highlight: #ff6574;
+    --alias-color-border-attention-default: #ff333f;
+    --alias-color-border-attention-active: #e32b36;
+    --alias-color-border-success-highlight: #0fbf67;
+    --alias-color-border-success-default: #0aa466;
+    --alias-color-border-success-active: #078962;
+    --alias-color-system-staticBlack-default: #000;
+    --alias-color-system-staticWhite-default: #fff;
+    --alias-color-system-staticClear-default: #fff0;
+    --component-button-secondary-hover: #ff65741a;
+    --component-button-secondary-pressed: #e32b361a;
+    --component-button-flat-hover: #ff65741a;
+    --component-button-flat-pressed: #e32b361a;
+    --component-avatar-border: #ccc6;
+    --component-skeleton-wave-shimmer: linear-gradient(135deg,#fff0 20%,#fffc,#fff0 80%);
+    --component-information-bubble-background-transaction: #fff6cf;
+    --component-mercari-logo-text-color: #222;
+    --focus-ring-color: #89bffd66;
+}
+
+:root {
+    --grid-layout-gutter: 24px;
+    --grid-layout-inset: 16px;
+    --grid-layout-page-padding-top: 40px;
+    --grid-layout-page-padding-bottom: 64px;
+    --grid-layout-page-padding-horizontal: 36px;
 }
