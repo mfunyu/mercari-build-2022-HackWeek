@@ -151,7 +151,8 @@ async def create_users(username: str = Form(...), password: str = Form(...)):
 @app.post("/items", status_code=201)
 async def add_item(
         name: str = Form(...), category: str = Form(...), image: UploadFile = File(...),
-        price: int = Form(...), is_auction: int = Form(0), on_sale: int = Form(1)
+        price: int = Form(...), is_auction: int = Form(0), on_sale: int = Form(1),
+        seller_id: str = Form(...), 
     ):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
@@ -175,11 +176,11 @@ async def add_item(
     c.execute(
         '''
         INSERT INTO
-            items (id, name, category_id, image, price, is_auction, on_sale) 
+            items (id, name, category_id, image, price, is_auction, on_sale, seller_id) 
         VALUES 
-            (?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?)
         ''',
-        (id, name, category, hashed_file_name, price, is_auction, on_sale)
+        (id, name, category, hashed_file_name, price, is_auction, on_sale, seller_id)
     )
 
     conn.commit()
@@ -202,7 +203,8 @@ def show_item():
             items.image,
             items.price,
             items.is_auction,
-            items.on_sale
+            items.on_sale,
+            items.seller_id
         FROM 
             items 
         INNER JOIN 
@@ -232,7 +234,8 @@ def item_details(id):
             items.image, 
             items.price,
             items.is_auction,
-            items.on_sale
+            items.on_sale,
+            items.seller_id
         FROM 
             items 
         INNER JOIN 
@@ -361,7 +364,7 @@ def update_status(id):
     return item_details(id)
 
 @app.post("/auction/{item_id}", status_code=201)
-def add_bid(item_id: str, bid_price: str = Form(...)):
+def add_bid(item_id: str, user_id: str = Form(...), bid_price: str = Form(...)):
     logger.info(f"New bid: {bid_price} yen for items_id: {item_id}")
 
     conn = sqlite3.connect(dbname)
@@ -379,11 +382,11 @@ def add_bid(item_id: str, bid_price: str = Form(...)):
         c.execute(
             '''
             INSERT INTO
-                auction (id, bidder_name, items_id, bid_price, item_name)
+                auction (id, bidder_id, items_id, bid_price, item_name)
             VALUES 
                 (?, ?, ?, ?, ?)
             ''',
-            (generated_id, "Bidder 1", item_id, bid_price, name)
+            (generated_id, user_id, item_id, bid_price, name)
         )
         conn.commit()
     except sqlite3.IntegrityError as err:
@@ -396,7 +399,7 @@ def add_bid(item_id: str, bid_price: str = Form(...)):
     return {name}
 
 @app.get("/auction")
-def show_auction():
+def show_auction(user_id: str = Form(...)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -404,22 +407,30 @@ def show_auction():
     c.execute(
         '''
         SELECT 
-            id,
-            bidder_name,
-            items_id,
-            bid_price,
-            item_name
+            auction.id,
+            auction.bidder_id,
+            auction.items_id,
+            auction.bid_price,
+            auction.item_name
         FROM 
             auction
-        '''
+        INNER JOIN
+            items
+        ON
+            auction.items_id = items.id
+        WHERE
+            items.seller_id = (?)
+        ''',
+        (user_id,)
     )
+    
     response = { "items": [row for row in c] }
     conn.close()
 
     return response
 
 @app.put("/auction/{item_id}")
-def update_bid(item_id: str, bid_price: str = Form(...)):
+def update_bid(item_id: str, user_id: str = Form(...), bid_price: str = Form(...)):
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
     
@@ -430,9 +441,9 @@ def update_bid(item_id: str, bid_price: str = Form(...)):
     SET
         bid_price = (?)
     WHERE
-        items_id = ? AND bidder_name = "Bidder 1"
+        items_id = ? AND bidder_id = ?
     ''',
-        (bid_price, item_id)
+        (bid_price, item_id, user_id)
     )
     conn.commit()
     conn.close()
@@ -444,7 +455,7 @@ def update_bid(item_id: str, bid_price: str = Form(...)):
     raise HTTPException(status_code=404, detail=f"Item not found")
 
 @app.delete("/auction/{item_id}")
-def delete_bid(item_id: str):
+def delete_bid(item_id: str, user_id: str = Form(...)):
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
@@ -453,9 +464,9 @@ def delete_bid(item_id: str):
     DELETE FROM 
         auction
     WHERE
-        items_id = ? AND bidder_name = "Bidder 1"
+        items_id = ? AND bidder_id = ?
     ''',
-        (item_id,)
+        (item_id, user_id)
     )
     conn.commit()
     conn.close()
