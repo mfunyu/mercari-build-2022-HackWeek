@@ -1,0 +1,106 @@
+*,
+:after,
+:before {
+	/* -webkit-tap-highlight-color: transparent; */
+	box-sizing: border-box;
+}
+
+.Listing {
+	max-width: 640px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.form {
+	display: block;
+}
+
+input[type=text], [type=file],
+select,
+.form>button,
+.upload {
+	background: var(--alias-color-background-primary-default);
+	border: 1px solid var(--alias-color-border-primary-default);
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.4em;
+	margin-bottom: 1em;
+	outline: none;
+	width: 100%;
+}
+
+/* Name, Price */
+input[type=text] {
+	appearance: none;
+	color: var(--alias-color-text-primary-default);
+	flex: 1 1;
+	outline: none;
+	padding: 16px;
+}
+
+/* Category */
+select {
+	appearance: none;
+	height: 55px;
+	padding: 0 44px 0 16px;
+}
+
+/* on error */
+input:invalid, select:invalid {
+	color: var(--alias-color-text-placeholder-default);
+	border-color: var(--alias-color-border-attention-default);
+}
+
+/* Upload Image */
+input[type=file] {
+	display: none;
+}
+
+.upload {
+	float: left;
+	padding: 12px 20px;
+	text-align: center;
+	/* border: none; */
+	border-radius: 4px;
+	font-weight: bold;
+	width: 100%;
+	cursor: pointer;
+	color: var(--alias-color-text-attention-default);
+	background-color: transparent;
+	border-color: var(--alias-color-border-attention-default);
+	fill: var(--alias-color-icon-attention-default);
+}
+
+.upload:hover {
+	background-color: var(--alias-color-background-attentionThin-highlight);
+}
+
+/* List Items (Sell button) */
+.form>button[type=submit] {
+	padding: 12px 20px;
+	font-weight: bold;
+	color: var(--alias-color-text-inverse-default);
+	background-color: var(--alias-color-background-attention-default);
+	fill: var(--alias-color-text-inverse-default);
+}
+
+.form>button[type=submit]:hover {
+	background-color: var(--alias-color-background-attention-highlight);
+}
+
+/* Checkbox */
+.checkbox {
+	background: var(--alias-color-background-primary-default);
+	box-sizing: border-box;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.4em;
+	margin-bottom: 1em;
+	outline: none;
+	width: 100%;
+	display: inline-block;
+	text-align: center;
+	padding: 16px;
+}
