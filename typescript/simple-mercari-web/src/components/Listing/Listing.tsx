@@ -109,7 +109,6 @@ export default function Listing() {
         <div className='desktop-container'>
             <a className='menu-item' href="/">Items</a>
             <a className='menu-item' href="/listing">Listing</a>
-            <a className='menu-button' href="/auction">Auction</a>
         </div>
     </header>
     <div className='Content'>

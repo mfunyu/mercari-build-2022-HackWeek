@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
+import PropTypes from 'prop-types';
 
 interface Bid {
     id: number;
@@ -34,7 +35,7 @@ const customStyles = {
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 
-export default function Auction() {
+export default function Auction(userId: string = "") {
     const [reload, setReload] = useState(true);
     const onLoadCompleted = () => {setReload(false)}
     const [bids, setBids] = useState<Bid[]>([])
@@ -57,7 +58,7 @@ export default function Auction() {
     }
     
     const fetchBids = () => {
-        fetch(server.concat('/auction'),
+        fetch(server.concat('/auction/'+{userId}),
             {
                 method: 'GET',
                 mode: 'cors',
@@ -175,4 +176,8 @@ export default function Auction() {
         </div>
         </div>
     )
+}
+
+Auction.propTypes = {
+	userId: PropTypes.string.isRequired,
 }

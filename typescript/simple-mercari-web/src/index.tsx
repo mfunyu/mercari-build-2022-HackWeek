@@ -6,6 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Auction from './components/Auction/Auction';
 import Listing from './components/Listing/Listing';
+import Register from './components/Login/Register';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,7 +14,8 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<App />}></Route>
         <Route path="/listing" element={<Listing />}></Route>
-        <Route path="/auction" element={<Auction />}></Route>
+        <Route path="/auction" element={<Auction userId={""} />} ></Route>
+        <Route path="/register" element={<Register />}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
