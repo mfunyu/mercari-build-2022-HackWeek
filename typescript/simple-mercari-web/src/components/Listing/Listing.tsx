@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import './Listing.css'
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
@@ -21,6 +22,12 @@ type Category = {
 }
 
 export default function Listing() {
+
+  let navigate = useNavigate(); 
+  const routeChange = () =>{ 
+    let path = `/`; 
+    navigate(path);
+  }
   const initialState = {
     name: "",
     category: "",
@@ -90,6 +97,7 @@ export default function Listing() {
     })
       .then(response => {
         console.log('POST status:', response.statusText);
+        routeChange()
       })
       .catch((error) => {
         console.error('POST error:', error);
@@ -114,7 +122,7 @@ export default function Listing() {
               {categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
             </select>
             <input type='text' name='price' id='price' placeholder='Price' onChange={onValueChange} required />
-            <Checkbox label="Allow Auction"
+            <Checkbox label="Allow O.B.O (Or Best Offer)"
             value={checked}
             onChange={handleChange}
             />
