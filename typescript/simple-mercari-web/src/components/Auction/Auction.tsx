@@ -140,14 +140,18 @@ export default function Auction() {
             <div className="Content">
             <div className="auction-table">
                 <table>
-                    <tr>
-                        <th>Item name</th>
-                        <th>Bid Price</th>
-                        <th></th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Bidder name</th>
+                            <th>Item name</th>
+                            <th>Bid Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
                     {bids.map((bid) => {
                         return (
                             <tr key={bid.id}>
+                                <td>{bid.bidder_name}</td>
                                 <td>{bid.item_name}</td>
                                 <td>{bid.bid_price}</td>
                                 <td><AcceptBid id={bid.items_id}/></td>
