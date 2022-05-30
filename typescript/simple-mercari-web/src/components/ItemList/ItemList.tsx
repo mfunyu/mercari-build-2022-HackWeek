@@ -277,6 +277,25 @@ export const ItemList: React.FC<Prop> = (props) => {
     }
   }
 
+//   const [images, setImages] = useState();
+//   const fetchImage = (image_name: string) => {
+//     return fetch(server.concat(`/image/${image_name}`),
+//     {
+//         method: 'GET',
+//         mode: 'cors',
+// 		headers: {
+// 			'Authorization': 'Bearer ' + getToken()
+// 		}
+//     // }).then(response => {
+//     //     console.log('GET status:', response.statusText);
+// 	}).then(res => res.blob())
+// 	.then(blob => {
+// 	    imgElement.src = URL.createObjectURL(blob);
+//     }).catch((error) => {
+//         console.error('GET error:', error);
+//     })
+//   }
+  
   return (
     <div className='Content'>
     <div className='wrapper' >
@@ -284,12 +303,7 @@ export const ItemList: React.FC<Prop> = (props) => {
         return (
           <div key={item.id} className='ItemList'>
             <div className='image-box'>
-              <Image source={{
-				  uri: `${server}/image/${item.image}`,
-				  method: 'GET',
-				  headers: {
-				Authorization: 'Beare ' + getToken()
-			  }}}/>
+			<img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
             </div>
             <p>
               <span className="item_label">Name:</span> {item.name}

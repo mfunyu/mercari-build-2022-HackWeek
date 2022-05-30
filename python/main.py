@@ -286,7 +286,8 @@ def search_item(keyword: str, user=Depends(manager)):
 
 
 @app.get("/image/{image_filename}")
-async def get_image(image_filename, user=Depends(manager)):
+async def get_image(image_filename):
+# async def get_image(image_filename, user=Depends(manager)):
     # Create image path
     image = images / image_filename
 
