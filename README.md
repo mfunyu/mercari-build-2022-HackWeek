@@ -1,5 +1,8 @@
 # Build@Mercari HACKWEEK 2022
 
+![HackWeekDemoNew](https://user-images.githubusercontent.com/60470877/170916954-8ba01e31-dadd-404c-bd69-294143926fdd.gif)
+
+
 # Installation
 
 ### for backend
