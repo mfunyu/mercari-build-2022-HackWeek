@@ -63,8 +63,8 @@ export default function Register() {
 				<div className='Listing'>
 					<form onSubmit={onSubmit}>
 						<div className="form">
-							<input type='text' name='username' id='username' placeholder='Name' onChange={onValueChange} required />
-							<input type='text' name='password' id='password' placeholder='Price' onChange={onValueChange} required />
+							<input type='text' name='username' id='username' placeholder='username' onChange={onValueChange} required />
+							<input type='text' name='password' id='password' placeholder='password' onChange={onValueChange} required />
 							<button type='submit'>SignUp</button>
 						</div>
 					</form>
