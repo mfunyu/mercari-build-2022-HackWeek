@@ -59,7 +59,7 @@ export default function Auction() {
     }
     
     const fetchBids = () => {
-        fetch(server.concat('/auction'),
+        fetch(server.concat('/auction/seller'),
             {
                 method: 'GET',
                 mode: 'cors',

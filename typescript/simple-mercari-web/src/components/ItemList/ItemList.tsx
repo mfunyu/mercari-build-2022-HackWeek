@@ -172,7 +172,7 @@ export const ItemList: React.FC<Prop> = (props) => {
 
   const [bids, setBids] = useState<Bid[]>([])
   const fetchBids = () => {
-      fetch(server.concat('/auction'),
+      fetch(server.concat('/auction/buyer'),
           {
               method: 'GET',
               mode: 'cors',
