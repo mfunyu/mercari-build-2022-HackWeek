@@ -5,7 +5,9 @@ CREATE TABLE IF NOT EXISTS items (
 	image TEXT,
 	price INT,
 	is_auction INT,
-	on_sale INT
+	on_sale INT,
+	seller_id TEXT,
+	FOREIGN KEY(seller_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS category (
@@ -15,10 +17,17 @@ CREATE TABLE IF NOT EXISTS category (
 
 CREATE TABLE IF NOT EXISTS auction (
 	id TEXT PRIMARY KEY,
-	bidder_name TEXT,
+	bidder_id TEXT,
 	items_id TEXT,
 	bid_price TEXT,
 	item_name TEXT,
+	FOREIGN KEY(bidder_id) REFERENCES users(id)
 	FOREIGN KEY(items_id) REFERENCES items(id)
-	UNIQUE (bidder_name, items_id)
+	UNIQUE (bidder_id, items_id)
+);
+
+CREATE TABLE IF NOT EXISTS users (
+	id TEXT PRIMARY KEY,
+	username TEXT UNIQUE,
+	password TEXT
 );
