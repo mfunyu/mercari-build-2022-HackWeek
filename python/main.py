@@ -5,6 +5,7 @@ import sqlite3
 import hashlib
 import uuid
 import bcrypt
+from datetime import timedelta
 from fastapi import FastAPI, Form, HTTPException, File, UploadFile, Depends
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,7 +16,7 @@ from fastapi_login.exceptions import InvalidCredentialsException
 SECRET = os.environ.get('JWT_SECRET', 'test')
 
 app = FastAPI()
-manager = LoginManager(SECRET, token_url='/login')
+manager = LoginManager(SECRET, token_url='/login', default_expiry=timedelta(hours=12))
 logger = logging.getLogger("uvicorn")
 logger.level = logging.DEBUG
 images = pathlib.Path(__file__).parent.resolve() / "images"
@@ -110,7 +111,8 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
         raise InvalidCredentialsException
 
     access_token = manager.create_access_token(
-        data={'sub': user["username"], 'id': user["id"]}
+        data={'sub': user["username"], 'id': user["id"]},
+        expires=timedelta(hours=12)
     )
 
     return {'access_token': access_token}
@@ -150,9 +152,9 @@ async def create_users(username: str = Form(...), password: str = Form(...)):
 
 @app.post("/items", status_code=201)
 async def add_item(
+        user=Depends(manager),
         name: str = Form(...), category: str = Form(...), image: UploadFile = File(...),
         price: int = Form(...), is_auction: int = Form(0), on_sale: int = Form(1),
-        seller_id: str = Form(...), 
     ):
     logger.info(f"Receive item: {name} Category: {category} Image: {image}")
 
@@ -180,7 +182,7 @@ async def add_item(
         VALUES 
             (?, ?, ?, ?, ?, ?, ?, ?)
         ''',
-        (id, name, category, hashed_file_name, price, is_auction, on_sale, seller_id)
+        (id, name, category, hashed_file_name, price, is_auction, on_sale, user["id"])
     )
 
     conn.commit()
@@ -189,7 +191,7 @@ async def add_item(
 
 
 @app.get("/items")
-def show_item():
+def show_item(user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -220,7 +222,7 @@ def show_item():
 
 
 @app.get("/items/{id}")
-def item_details(id):
+def item_details(id, user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -258,7 +260,7 @@ def item_details(id):
 
 
 @app.get("/search")
-def search_item(keyword: str):
+def search_item(keyword: str, user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -300,7 +302,7 @@ async def get_image(image_filename):
 
 
 @app.post("/categories")
-def add_category(name: str = Form(...)):
+def add_category(name: str = Form(...), user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
@@ -321,7 +323,7 @@ def add_category(name: str = Form(...)):
     return {"message": f"New category added: {name}"}
 
 @app.get("/categories")
-def show_category():
+def show_category(user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -341,7 +343,7 @@ def show_category():
     return response
 
 @app.put("/update/status/{id}")
-def update_status(id):
+def update_status(id,user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -364,7 +366,7 @@ def update_status(id):
     return item_details(id)
 
 @app.post("/auction/{item_id}", status_code=201)
-def add_bid(item_id: str, user_id: str = Form(...), bid_price: str = Form(...)):
+def add_bid(item_id: str, bid_price: str = Form(...), user=Depends(manager)):
     logger.info(f"New bid: {bid_price} yen for items_id: {item_id}")
 
     conn = sqlite3.connect(dbname)
@@ -386,7 +388,7 @@ def add_bid(item_id: str, user_id: str = Form(...), bid_price: str = Form(...)):
             VALUES 
                 (?, ?, ?, ?, ?)
             ''',
-            (generated_id, user_id, item_id, bid_price, name)
+            (generated_id, user["id"], item_id, bid_price, name)
         )
         conn.commit()
     except sqlite3.IntegrityError as err:
@@ -398,8 +400,8 @@ def add_bid(item_id: str, user_id: str = Form(...), bid_price: str = Form(...)):
 
     return {name}
 
-@app.get("/auction")
-def show_auction(user_id: str = Form(...)):
+@app.get("/auction/seller")   #FOR Seller
+def show_auction(user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
@@ -421,7 +423,38 @@ def show_auction(user_id: str = Form(...)):
         WHERE
             items.seller_id = (?)
         ''',
-        (user_id,)
+        (user["id"],)
+    )
+
+    response = { "items": [row for row in c] }
+    conn.close()
+
+    return response
+
+@app.get("/auction/buyer")   #FOR Buyer
+def show_auction(user=Depends(manager)):
+    conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        SELECT 
+            auction.id,
+            auction.bidder_id,
+            auction.items_id,
+            auction.bid_price,
+            auction.item_name
+        FROM 
+            auction
+        INNER JOIN
+            items
+        ON
+            auction.items_id = items.id
+        WHERE
+            auction.bidder_id = (?)
+        ''',
+        (user["id"],)
     )
     
     response = { "items": [row for row in c] }
@@ -430,7 +463,7 @@ def show_auction(user_id: str = Form(...)):
     return response
 
 @app.put("/auction/{item_id}")
-def update_bid(item_id: str, user_id: str = Form(...), bid_price: str = Form(...)):
+def update_bid(item_id: str, bid_price: str = Form(...), user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
     
@@ -443,7 +476,7 @@ def update_bid(item_id: str, user_id: str = Form(...), bid_price: str = Form(...
     WHERE
         items_id = ? AND bidder_id = ?
     ''',
-        (bid_price, item_id, user_id)
+        (bid_price, item_id, user["id"])
     )
     conn.commit()
     conn.close()
@@ -455,7 +488,7 @@ def update_bid(item_id: str, user_id: str = Form(...), bid_price: str = Form(...
     raise HTTPException(status_code=404, detail=f"Item not found")
 
 @app.delete("/auction/{item_id}")
-def delete_bid(item_id: str, user_id: str = Form(...)):
+def delete_bid(item_id: str, user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     c = conn.cursor()
 
@@ -466,7 +499,7 @@ def delete_bid(item_id: str, user_id: str = Form(...)):
     WHERE
         items_id = ? AND bidder_id = ?
     ''',
-        (item_id, user_id)
+        (item_id, user["id"])
     )
     conn.commit()
     conn.close()
