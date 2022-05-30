@@ -286,7 +286,7 @@ def search_item(keyword: str, user=Depends(manager)):
 
 
 @app.get("/image/{image_filename}")
-async def get_image(image_filename, user=Depends(manager)):
+async def get_image(image_filename):
     # Create image path
     image = images / image_filename
 
@@ -426,7 +426,12 @@ def show_auction(user=Depends(manager)):
         (user["id"],)
     )
 
-@app.get("/auction/bidder")   #FOR Buyer
+    response = { "items": [row for row in c] }
+    conn.close()
+
+    return response
+
+@app.get("/auction/buyer")   #FOR Buyer
 def show_auction(user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
