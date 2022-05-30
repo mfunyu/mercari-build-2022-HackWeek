@@ -400,7 +400,7 @@ def add_bid(item_id: str, bid_price: str = Form(...), user=Depends(manager)):
 
     return {name}
 
-@app.get("/auction")
+@app.get("/auction/seller")   #FOR Seller
 def show_auction(user=Depends(manager)):
     conn = sqlite3.connect(dbname)
     conn.row_factory = sqlite3.Row
@@ -422,6 +422,32 @@ def show_auction(user=Depends(manager)):
             auction.items_id = items.id
         WHERE
             items.seller_id = (?)
+        ''',
+        (user["id"],)
+    )
+
+@app.get("/auction/bidder")   #FOR Buyer
+def show_auction(user=Depends(manager)):
+    conn = sqlite3.connect(dbname)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute(
+        '''
+        SELECT 
+            auction.id,
+            auction.bidder_id,
+            auction.items_id,
+            auction.bid_price,
+            auction.item_name
+        FROM 
+            auction
+        INNER JOIN
+            items
+        ON
+            auction.items_id = items.id
+        WHERE
+            auction.bidder_id = (?)
         ''',
         (user["id"],)
     )
