@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import './Listing.css'
+import { getToken } from '../Login/Auth';
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 
@@ -19,8 +22,13 @@ type Category = {
   name: string,
 }
 
-export const Listing: React.FC<Prop> = (props) => {
-  const { onListingCompleted } = props;
+export default function Listing() {
+
+  let navigate = useNavigate(); 
+  const routeChange = () =>{ 
+    let path = `/`; 
+    navigate(path);
+  }
   const initialState = {
     name: "",
     category: "",
@@ -43,6 +51,7 @@ export const Listing: React.FC<Prop> = (props) => {
         method: 'GET',
         mode: 'cors',
         headers: {
+			'Authorization': 'Bearer '+ getToken(),
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -87,16 +96,27 @@ export const Listing: React.FC<Prop> = (props) => {
       method: 'POST',
       mode: 'cors',
       body: data,
+	  headers: {
+		'Authorization': 'Bearer '+ getToken()
+		}
     })
       .then(response => {
         console.log('POST status:', response.statusText);
-        onListingCompleted && onListingCompleted();
+        routeChange()
       })
       .catch((error) => {
         console.error('POST error:', error);
       })
   };
   return (
+    <div>
+    <header className='Title'>
+        <div className='desktop-container'>
+            <a className='menu-item' href="/">Items</a>
+            <a className='menu-item' href="/listing">Listing</a>
+        </div>
+    </header>
+    <div className='Content'>
     <div className='Listing'>
       <form onSubmit={onSubmit}>
         <div className="form">
@@ -106,7 +126,7 @@ export const Listing: React.FC<Prop> = (props) => {
               {categories.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
             </select>
             <input type='text' name='price' id='price' placeholder='Price' onChange={onValueChange} required />
-            <Checkbox label="Allow Auction"
+            <Checkbox label="Allow O.B.O (Or Best Offer)"
             value={checked}
             onChange={handleChange}
             />
@@ -117,13 +137,15 @@ export const Listing: React.FC<Prop> = (props) => {
         </div>
       </form>
     </div>
+    </div>
+    </div>
   );
 }
 
 // @ts-ignore
 const Checkbox = ({label, value, onChange}) => {
   return (
-    <label>
+    <label className='checkbox'>
       <input type="checkbox" checked={value} onChange={onChange} />
       {label}
     </label>
