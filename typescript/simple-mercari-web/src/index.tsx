@@ -14,7 +14,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<App />}></Route>
         <Route path="/listing" element={<Listing />}></Route>
-        <Route path="/auction" element={<Auction userId={""} />} ></Route>
+        <Route path="/auction" element={<Auction />} ></Route>
         <Route path="/register" element={<Register />}></Route>
       </Routes>
     </BrowserRouter>

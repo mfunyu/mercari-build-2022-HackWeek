@@ -28,7 +28,7 @@ function App() {
           <div className='desktop-container'>
             <a className='menu-item' href="/">Items</a>
             <a className='menu-item' href="/listing">Listing</a>
-            <Link className='menu-button' to="/auction" state={getUserId()}>Auction</Link>	
+            <Link className='menu-button' to="/auction">Auction</Link>	
           </div>
       </header>
       <div>

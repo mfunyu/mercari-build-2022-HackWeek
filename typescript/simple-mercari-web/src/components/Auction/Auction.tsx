@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
+import { getUserId, getToken } from '../Login/Auth'
 
 interface Bid {
     id: number;
@@ -35,7 +36,7 @@ const customStyles = {
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 
-export default function Auction(userId: string = "") {
+export default function Auction() {
     const [reload, setReload] = useState(true);
     const onLoadCompleted = () => {setReload(false)}
     const [bids, setBids] = useState<Bid[]>([])
@@ -58,11 +59,12 @@ export default function Auction(userId: string = "") {
     }
     
     const fetchBids = () => {
-        fetch(server.concat('/auction/'+{userId}),
+        fetch(server.concat('/auction'),
             {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
+				'Authorization': 'Bearer '+ getToken(),
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
                 },
@@ -84,6 +86,7 @@ export default function Auction(userId: string = "") {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
+					'Authorization': 'Bearer '+ getToken(),
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
                 },
@@ -104,6 +107,9 @@ export default function Auction(userId: string = "") {
             {
                 method: 'PUT',
                 mode: 'cors',
+				headers: {
+					'Authorization': 'Bearer '+ getToken()
+				}
             }).then(response => {
                 console.log('PUT status:', response.statusText);
             }).then(() =>{
@@ -176,8 +182,4 @@ export default function Auction(userId: string = "") {
         </div>
         </div>
     )
-}
-
-Auction.propTypes = {
-	userId: PropTypes.string.isRequired,
 }
