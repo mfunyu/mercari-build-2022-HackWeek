@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState} from 'react';
 import Modal from 'react-modal';
 import { getToken } from '../Login/Auth'
+import { Image } from 'react-native'
 
 interface Item {
   id: string;
@@ -283,7 +284,12 @@ export const ItemList: React.FC<Prop> = (props) => {
         return (
           <div key={item.id} className='ItemList'>
             <div className='image-box'>
-              <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
+              <Image source={{
+				  uri: `${server}/image/${item.image}`,
+				  method: 'GET',
+				  headers: {
+				Authorization: 'Beare ' + getToken()
+			  }}}/>
             </div>
             <p>
               <span className="item_label">Name:</span> {item.name}
