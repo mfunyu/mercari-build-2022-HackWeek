@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import './Listing.css'
+import { getToken } from '../Login/Auth';
 
 const server = process.env.API_URL || 'http://127.0.0.1:9000';
 
@@ -50,6 +51,7 @@ export default function Listing() {
         method: 'GET',
         mode: 'cors',
         headers: {
+			'Authorization': 'Bearer '+ getToken(),
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -94,6 +96,9 @@ export default function Listing() {
       method: 'POST',
       mode: 'cors',
       body: data,
+	  headers: {
+		'Authorization': 'Bearer '+ getToken()
+		}
     })
       .then(response => {
         console.log('POST status:', response.statusText);

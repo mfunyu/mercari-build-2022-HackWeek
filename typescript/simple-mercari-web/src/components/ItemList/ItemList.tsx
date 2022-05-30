@@ -1,5 +1,6 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState} from 'react';
 import Modal from 'react-modal';
+import { getToken } from '../Login/Auth'
 
 interface Item {
   id: string;
@@ -69,6 +70,9 @@ export const ItemList: React.FC<Prop> = (props) => {
       method: 'POST',
       mode: 'cors',
       body: data,
+	  headers: {
+		'Authorization': 'Bearer '+ getToken()
+	  }
     }).then(response => {
       console.log('POST status:', response.statusText);
     }).then(() =>{
@@ -88,6 +92,9 @@ export const ItemList: React.FC<Prop> = (props) => {
       method: 'PUT',
       mode: 'cors',
       body: data,
+	  headers: {
+		'Authorization': 'Bearer '+ getToken()
+	  }
     }).then(response => {
       console.log('PUT status:', response.statusText);
     }).then(() =>{
@@ -146,6 +153,7 @@ export const ItemList: React.FC<Prop> = (props) => {
         method: 'GET',
         mode: 'cors',
         headers: {
+			'Authorization': 'Bearer '+ getToken(),
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -168,6 +176,7 @@ export const ItemList: React.FC<Prop> = (props) => {
               method: 'GET',
               mode: 'cors',
               headers: {
+				'Authorization': 'Bearer '+ getToken(),
               'Content-Type': 'application/json',
               'Accept': 'application/json'
               },
@@ -188,6 +197,9 @@ export const ItemList: React.FC<Prop> = (props) => {
     {
       method: 'DELETE',
       mode: 'cors',
+	  headers: {
+		'Authorization': 'Bearer '+ getToken()
+	  }
     }).then(response => {
       console.log('DELETE status:', response.statusText);
     }).then(() =>{
@@ -204,6 +216,9 @@ export const ItemList: React.FC<Prop> = (props) => {
     {
         method: 'PUT',
         mode: 'cors',
+		headers: {
+			'Authorization': 'Bearer '+ getToken()
+		}
     }).then(response => {
         console.log('PUT status:', response.statusText);
     }).then(() =>{

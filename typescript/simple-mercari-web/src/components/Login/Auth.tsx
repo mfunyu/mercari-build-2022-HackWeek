@@ -16,7 +16,7 @@ export function getUserId() {
 	return userId?.id
 }
 
-export function getToken() {
+export function getToken(): string{
 	const tokenString = sessionStorage.getItem('access_token');
 	if (!tokenString)
 		return "";
