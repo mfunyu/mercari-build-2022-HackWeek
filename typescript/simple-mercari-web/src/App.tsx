@@ -6,12 +6,35 @@ import {
 } from "react-router-dom";
 import Login from './components/Login/Login';
 
+function setToken(userToken: any) {
+	sessionStorage.setItem('access_token', JSON.stringify(userToken));
+}
+
+function setUserId(userId: any) {
+	sessionStorage.setItem('id', JSON.stringify(userId));
+}
+
+function getUserId() {
+	const userIdString = sessionStorage.getItem('id');
+	if (!userIdString)
+		return "";
+	const userId = JSON.parse(userIdString);
+	return userId?.id
+}
+
+
+function getToken() {
+	const tokenString = sessionStorage.getItem('access_token');
+	if (!tokenString)
+		return "";
+	const userToken = JSON.parse(tokenString);
+	return userToken?.access_token
+}
+
 function App() {
   // reload ItemList after Listing complete
   const [reload, setReload] = useState(true);
-
-  const [token, setToken] = useState();
-  const [userId, setUserId] = useState();
+  const token = getToken();
 
   if(!token) {
 	  return (
@@ -28,7 +51,7 @@ function App() {
           <div className='desktop-container'>
             <a className='menu-item' href="/">Items</a>
             <a className='menu-item' href="/listing">Listing</a>
-            <Link className='menu-button' to="/auction" state={userId}>Auction</Link>	
+            <Link className='menu-button' to="/auction" state={getUserId()}>Auction</Link>	
           </div>
       </header>
       <div>

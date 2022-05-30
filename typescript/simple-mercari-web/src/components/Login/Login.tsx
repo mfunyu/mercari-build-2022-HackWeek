@@ -33,7 +33,7 @@ async function getId(token: any) {
 		.then(data => data.json())
 }
 
-export default function Login({ setToken }: any, { setUserId }: any) {
+export default function Login({ setToken, setUserId}: any) {
 	let navigate = useNavigate(); 
 	const routeChange = () =>{ 
 	  let path = `/`; 
@@ -62,10 +62,9 @@ export default function Login({ setToken }: any, { setUserId }: any) {
 		data.append('password', values.password)
 
 		const token = await login(data)
-		setToken(token['access_token']);
+		setToken(token);
 		const userId = await getId(token['access_token'])
-		console.log(userId['id']);
-		setUserId(userId['id']);
+		setUserId(userId);
 	};
 
 	return (
