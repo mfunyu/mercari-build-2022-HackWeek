@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Modal from 'react-modal';
 import PropTypes from 'prop-types';
 import { stringify } from "querystring";
@@ -82,6 +82,7 @@ export default function Login({ setToken, setUserId}: any) {
 							<input type='text' name='username' id='username' placeholder='username' onChange={onValueChange} required />
 							<input type='text' name='password' id='password' placeholder='password' onChange={onValueChange} required />
 							<button type='submit'>Login</button>
+							<Link to="/register" className='upload'>Register</Link>
 						</div>
 					</form>
 				</div>

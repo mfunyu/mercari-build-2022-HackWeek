@@ -61,6 +61,7 @@ input[type=file] {
 .upload {
 	float: left;
 	padding: 12px 20px;
+	height: auto;
 	text-align: center;
 	/* border: none; */
 	border-radius: 4px;

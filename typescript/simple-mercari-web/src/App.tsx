@@ -17,7 +17,6 @@ function App() {
 	  return (
 		<>
 			<Login setToken={setToken} setUserId={setUserId} />
-			<Link to="/register" className='menu-button'>Register</Link>
 		</>
 	  )
 	}
