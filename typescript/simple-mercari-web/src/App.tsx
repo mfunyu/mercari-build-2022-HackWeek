@@ -5,31 +5,8 @@ import {
   Link
 } from "react-router-dom";
 import Login from './components/Login/Login';
+import { setToken, setUserId, getUserId, getToken } from './components/Login/Auth'
 
-function setToken(userToken: any) {
-	sessionStorage.setItem('access_token', JSON.stringify(userToken));
-}
-
-function setUserId(userId: any) {
-	sessionStorage.setItem('id', JSON.stringify(userId));
-}
-
-function getUserId() {
-	const userIdString = sessionStorage.getItem('id');
-	if (!userIdString)
-		return "";
-	const userId = JSON.parse(userIdString);
-	return userId?.id
-}
-
-
-function getToken() {
-	const tokenString = sessionStorage.getItem('access_token');
-	if (!tokenString)
-		return "";
-	const userToken = JSON.parse(tokenString);
-	return userToken?.access_token
-}
 
 function App() {
   // reload ItemList after Listing complete
