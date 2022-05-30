@@ -1,5 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { getToken } from '../Login/Auth'
+import { Image } from 'react-native'
 
 interface Item {
   id: string;
@@ -69,6 +71,9 @@ export const ItemList: React.FC<Prop> = (props) => {
       method: 'POST',
       mode: 'cors',
       body: data,
+	  headers: {
+		'Authorization': 'Bearer '+ getToken()
+	  }
     }).then(response => {
       console.log('POST status:', response.statusText);
     }).then(() =>{
@@ -88,6 +93,9 @@ export const ItemList: React.FC<Prop> = (props) => {
       method: 'PUT',
       mode: 'cors',
       body: data,
+	  headers: {
+		'Authorization': 'Bearer '+ getToken()
+	  }
     }).then(response => {
       console.log('PUT status:', response.statusText);
     }).then(() =>{
@@ -146,6 +154,7 @@ export const ItemList: React.FC<Prop> = (props) => {
         method: 'GET',
         mode: 'cors',
         headers: {
+			'Authorization': 'Bearer '+ getToken(),
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -163,11 +172,12 @@ export const ItemList: React.FC<Prop> = (props) => {
 
   const [bids, setBids] = useState<Bid[]>([])
   const fetchBids = () => {
-      fetch(server.concat('/auction'),
+      fetch(server.concat('/auction/buyer'),
           {
               method: 'GET',
               mode: 'cors',
               headers: {
+				'Authorization': 'Bearer '+ getToken(),
               'Content-Type': 'application/json',
               'Accept': 'application/json'
               },
@@ -188,6 +198,9 @@ export const ItemList: React.FC<Prop> = (props) => {
     {
       method: 'DELETE',
       mode: 'cors',
+	  headers: {
+		'Authorization': 'Bearer '+ getToken()
+	  }
     }).then(response => {
       console.log('DELETE status:', response.statusText);
     }).then(() =>{
@@ -204,6 +217,9 @@ export const ItemList: React.FC<Prop> = (props) => {
     {
         method: 'PUT',
         mode: 'cors',
+		headers: {
+			'Authorization': 'Bearer '+ getToken()
+		}
     }).then(response => {
         console.log('PUT status:', response.statusText);
     }).then(() =>{
@@ -261,6 +277,25 @@ export const ItemList: React.FC<Prop> = (props) => {
     }
   }
 
+//   const [images, setImages] = useState();
+//   const fetchImage = (image_name: string) => {
+//     return fetch(server.concat(`/image/${image_name}`),
+//     {
+//         method: 'GET',
+//         mode: 'cors',
+// 		headers: {
+// 			'Authorization': 'Bearer ' + getToken()
+// 		}
+//     // }).then(response => {
+//     //     console.log('GET status:', response.statusText);
+// 	}).then(res => res.blob())
+// 	.then(blob => {
+// 	    imgElement.src = URL.createObjectURL(blob);
+//     }).catch((error) => {
+//         console.error('GET error:', error);
+//     })
+//   }
+  
   return (
     <div className='Content'>
     <div className='wrapper' >
@@ -268,7 +303,7 @@ export const ItemList: React.FC<Prop> = (props) => {
         return (
           <div key={item.id} className='ItemList'>
             <div className='image-box'>
-              <img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
+			<img src= {`${server}/image/${item.image}`} className='image' alt='not available'/>
             </div>
             <p>
               <span className="item_label">Name:</span> {item.name}

@@ -1,6 +1,8 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import Modal from 'react-modal';
+import PropTypes from 'prop-types';
+import { getUserId, getToken } from '../Login/Auth'
 
 interface Bid {
     id: number;
@@ -57,11 +59,12 @@ export default function Auction() {
     }
     
     const fetchBids = () => {
-        fetch(server.concat('/auction'),
+        fetch(server.concat('/auction/seller'),
             {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
+				'Authorization': 'Bearer '+ getToken(),
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
                 },
@@ -83,6 +86,7 @@ export default function Auction() {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
+					'Authorization': 'Bearer '+ getToken(),
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
                 },
@@ -103,6 +107,9 @@ export default function Auction() {
             {
                 method: 'PUT',
                 mode: 'cors',
+				headers: {
+					'Authorization': 'Bearer '+ getToken()
+				}
             }).then(response => {
                 console.log('PUT status:', response.statusText);
             }).then(() =>{
