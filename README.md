@@ -4,8 +4,11 @@
 This is the Team17's project at **Build@Mercari HACKWEEK 2022**<br/>
 The theme for Build@Mercari HACKWEEK 2022 is "A new listing feature at Mercari"
 
-![ezgif com-gif-maker (2)](https://user-images.githubusercontent.com/60470877/171128138-a8708846-0f1d-4810-96fb-d2abc3f0cd7f.gif)
+### Presentation Slide [>>>](https://github.com/mfunyu/mercari-build-2022-HackWeek/blob/main/Presentation-Team17.pdf)
 
+### Demo
+![ezgif com-gif-maker (2)](https://user-images.githubusercontent.com/60470877/171128138-a8708846-0f1d-4810-96fb-d2abc3f0cd7f.gif)
+ 
 
 
 # Installation
